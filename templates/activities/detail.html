@@ -1,0 +1,220 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ activity.title }} - UFC Sobral{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <!-- Breadcrumb -->
+    <nav class="mb-8">
+        <ol class="flex items-center space-x-2 text-sm text-gray-500 dark:text-gray-400">
+            <li><a href="{% url 'activity_list' %}" class="hover:text-primary-600 dark:hover:text-primary-400">Atividades</a></li>
+            <li><i class="fas fa-chevron-right text-xs"></i></li>
+            <li class="text-gray-900 dark:text-white">{{ activity.title }}</li>
+        </ol>
+    </nav>
+    
+    <!-- Header da Atividade -->
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden mb-8">
+        <!-- Imagem -->
+        {% if activity.image %}
+            <img src="{{ activity.image.url }}" 
+                 alt="{{ activity.title }}"
+                 class="w-full h-64 object-cover">
+        {% else %}
+            <div class="w-full h-64 bg-gradient-to-br from-primary-500 to-primary-600 flex items-center justify-center">
+                <i class="fas fa-calendar-alt text-white text-6xl"></i>
+            </div>
+        {% endif %}
+        
+        <!-- Conteúdo do Header -->
+        <div class="p-8">
+            <div class="flex justify-between items-start mb-4">
+                <div class="flex items-center space-x-3">
+                    <span class="status-badge status-{{ activity.status|lower }}">
+                        {{ activity.get_status_display }}
+                    </span>
+                    <span class="text-sm text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-gray-700 px-3 py-1 rounded-full">
+                        {{ activity.get_type_display }}
+                    </span>
+                </div>
+                
+                {% if user.is_authenticated %}
+                    <div class="flex space-x-2">
+                        <a href="{% url 'activity_update' activity.pk %}" class="btn-secondary">
+                            <i class="fas fa-edit mr-2"></i>Editar
+                        </a>
+                        <a href="{% url 'activity_delete' activity.pk %}" class="btn-danger" onclick="return confirmDelete('Tem certeza que deseja excluir esta atividade?')">
+                            <i class="fas fa-trash mr-2"></i>Excluir
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+            
+            <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-4">{{ activity.title }}</h1>
+            
+            <!-- Informações Básicas -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+                <div class="flex items-center text-gray-600 dark:text-gray-400">
+                    <i class="fas fa-calendar-alt text-primary-600 w-5 mr-3"></i>
+                    <div>
+                        <div class="text-sm text-gray-500 dark:text-gray-500">Data</div>
+                        <div class="font-medium">
+                            {{ activity.start_date|date:"d/m/Y" }}
+                            {% if activity.start_date != activity.end_date %}
+                                - {{ activity.end_date|date:"d/m/Y" }}
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                
+                {% if activity.time %}
+                    <div class="flex items-center text-gray-600 dark:text-gray-400">
+                        <i class="fas fa-clock text-primary-600 w-5 mr-3"></i>
+                        <div>
+                            <div class="text-sm text-gray-500 dark:text-gray-500">Horário</div>
+                            <div class="font-medium">{{ activity.time }}</div>
+                        </div>
+                    </div>
+                {% endif %}
+                
+                <div class="flex items-center text-gray-600 dark:text-gray-400">
+                    <i class="fas fa-map-marker-alt text-primary-600 w-5 mr-3"></i>
+                    <div>
+                        <div class="text-sm text-gray-500 dark:text-gray-500">Local</div>
+                        <div class="font-medium">{{ activity.location }}</div>
+                    </div>
+                </div>
+                
+                <div class="flex items-center text-gray-600 dark:text-gray-400">
+                    <i class="fas fa-user text-primary-600 w-5 mr-3"></i>
+                    <div>
+                        <div class="text-sm text-gray-500 dark:text-gray-500">Coordenador</div>
+                        <div class="font-medium">{{ activity.coordinator }}</div>
+                    </div>
+                </div>
+                
+                {% if activity.participants > 0 %}
+                    <div class="flex items-center text-gray-600 dark:text-gray-400">
+                        <i class="fas fa-users text-primary-600 w-5 mr-3"></i>
+                        <div>
+                            <div class="text-sm text-gray-500 dark:text-gray-500">Participantes</div>
+                            <div class="font-medium">{{ activity.participants }}</div>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+            
+            <!-- Tags -->
+            {% if activity.tags.all %}
+                <div class="mb-6">
+                    <h3 class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Tags</h3>
+                    <div class="flex flex-wrap">
+                        {% for tag in activity.tags.all %}
+                            <span class="tag">{{ tag.name }}</span>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+    
+    <!-- Conteúdo Principal -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- Descrição -->
+        <div class="lg:col-span-2">
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-8">
+                <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">Descrição</h2>
+                <div class="prose dark:prose-invert max-w-none">
+                    {{ activity.description|linebreaks }}
+                </div>
+            </div>
+            
+            <!-- Requisitos -->
+            {% if activity.requirements.all %}
+                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-8 mt-6">
+                    <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">Requisitos</h2>
+                    <ul class="space-y-2">
+                        {% for requirement in activity.requirements.all %}
+                            <li class="flex items-start">
+                                <i class="fas fa-check-circle text-green-500 mt-1 mr-3 flex-shrink-0"></i>
+                                <span class="text-gray-700 dark:text-gray-300">{{ requirement.requirement }}</span>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endif %}
+        </div>
+        
+        <!-- Sidebar -->
+        <div class="space-y-6">
+            <!-- Informações Adicionais -->
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Informações</h3>
+                
+                <div class="space-y-4">
+                    <div>
+                        <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Criado em</dt>
+                        <dd class="text-sm text-gray-900 dark:text-white">{{ activity.created_at|date:"d/m/Y H:i" }}</dd>
+                    </div>
+                    
+                    <div>
+                        <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Última atualização</dt>
+                        <dd class="text-sm text-gray-900 dark:text-white">{{ activity.updated_at|date:"d/m/Y H:i" }}</dd>
+                    </div>
+                    
+                    <div>
+                        <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Status</dt>
+                        <dd>
+                            <span class="status-badge status-{{ activity.status|lower }}">
+                                {{ activity.get_status_display }}
+                            </span>
+                        </dd>
+                    </div>
+                    
+                    <div>
+                        <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Tipo</dt>
+                        <dd class="text-sm text-gray-900 dark:text-white">{{ activity.get_type_display }}</dd>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Ações -->
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Ações</h3>
+                
+                <div class="space-y-3">
+                    <button onclick="window.print()" class="w-full btn-secondary">
+                        <i class="fas fa-print mr-2"></i>Imprimir
+                    </button>
+                    
+                    <button onclick="shareActivity()" class="w-full btn-secondary">
+                        <i class="fas fa-share-alt mr-2"></i>Compartilhar
+                    </button>
+                    
+                    <a href="{% url 'activity_list' %}" class="w-full btn-primary block text-center">
+                        <i class="fas fa-arrow-left mr-2"></i>Voltar à lista
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function shareActivity() {
+    if (navigator.share) {
+        navigator.share({
+            title: '{{ activity.title }}',
+            text: '{{ activity.description|truncatewords:20 }}',
+            url: window.location.href
+        });
+    } else {
+        // Fallback: copiar URL para clipboard
+        navigator.clipboard.writeText(window.location.href).then(() => {
+            alert('Link copiado para a área de transferência!');
+        });
+    }
+}
+</script>
+{% endblock %}
+

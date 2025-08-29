@@ -1,0 +1,61 @@
+{% load static %}
+<footer id="app-footer" class="relative without-sidebar bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-gray-800 transition-all duration-500 transform border-t border-gray-200 dark:border-gray-700">
+    <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-blue-500 to-transparent opacity-20"></div>
+    <div class="absolute inset-0 bg-gradient-to-b from-blue-500/5 to-transparent pointer-events-none"></div>
+
+    <div class="max-w-7xl mx-auto px-6 py-12 relative">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
+            <div class="space-y-4">
+                <img src="{% static 'images/Imagem1.png' %}" alt="UFC Sobral Logo" class="h-auto w-auto object-contain mb-4 opacity-90 max-w-[200px]"/>
+                <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">Formando profissionais e gerando conhecimento para o desenvolvimento do país.</p>
+                <div class="flex items-center gap-3 pt-4">
+                    <button onclick="toggleTheme()" class="px-3 py-2 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-600">Tema</button>
+                    <button onclick="toggleAccessibility()" class="px-3 py-2 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-600">Acessibilidade</button>
+                </div>
+            </div>
+
+            <div>
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-6 relative">Institucional <span class="absolute -bottom-2 left-0 w-12 h-0.5 bg-blue-600 dark:bg-blue-400"></span></h3>
+                <ul class="space-y-3 text-sm">
+                    <li><a href="https://www.ufc.br/a-universidade" target="_blank" class="text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors flex items-center gap-2"><span class="w-1 h-1 rounded-full bg-blue-600/50 dark:bg-blue-400/50"></span>Sobre a UFC</a></li>
+                    <li><a href="https://sobral.ufc.br/" target="_blank" class="text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors flex items-center gap-2"><span class="w-1 h-1 rounded-full bg-blue-600/50 dark:bg-blue-400/50"></span>Campus Sobral</a></li>
+                    <li><a href="https://www.ufc.br/noticias" target="_blank" class="text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors flex items-center gap-2"><span class="w-1 h-1 rounded-full bg-blue-600/50 dark:bg-blue-400/50"></span>Notícias</a></li>
+                    <li><a href="#" class="text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors flex items-center gap-2"><span class="w-1 h-1 rounded-full bg-blue-600/50 dark:bg-blue-400/50"></span>Contato</a></li>
+                </ul>
+            </div>
+
+            <div>
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-6 relative">Acesso Rápido <span class="absolute -bottom-2 left-0 w-12 h-0.5 bg-blue-600 dark:bg-blue-400"></span></h3>
+                <ul class="space-y-3 text-sm">
+                    <li><a href="https://si3.ufc.br/sigaa/" target="_blank" class="text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors flex items-center gap-2"><span class="w-1 h-1 rounded-full bg-blue-600/50 dark:bg-blue-400/50"></span>Portal do Aluno</a></li>
+                    <li><a href="https://biblioteca.ufc.br/" target="_blank" class="text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors flex items-center gap-2"><span class="w-1 h-1 rounded-full bg-blue-600/50 dark:bg-blue-400/50"></span>Biblioteca</a></li>
+                    <li><a href="https://www.ufc.br/calendario-universitario/2025" target="_blank" class="text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors flex items-center gap-2"><span class="w-1 h-1 rounded-full bg-blue-600/50 dark:bg-blue-400/50"></span>Calendário Acadêmico</a></li>
+                    <li><a href="#" class="text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors flex items-center gap-2"><span class="w-1 h-1 rounded-full bg-blue-600/50 dark:bg-blue-400/50"></span>Documentos</a></li>
+                </ul>
+            </div>
+
+            <div>
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-6 relative">Redes Sociais <span class="absolute -bottom-2 left-0 w-12 h-0.5 bg-blue-600 dark:bg-blue-400"></span></h3>
+                <div class="grid grid-cols-2 gap-4 text-sm">
+                    <a href="https://www.instagram.com/ufcinforma/" target="_blank" class="flex items-center gap-3 text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-all hover:translate-x-1"><span class="text-xl">📸</span><span>Instagram</span></a>
+                    <a href="https://facebook.com/ufcsobral" target="_blank" class="flex items-center gap-3 text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-all hover:translate-x-1"><span class="text-xl">👥</span><span>Facebook</span></a>
+                    <a href="https://twitter.com/ufcsobral" target="_blank" class="flex items-center gap-3 text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-all hover:translate-x-1"><span class="text-xl">🐦</span><span>Twitter</span></a>
+                    <a href="https://youtube.com/ufcsobral" target="_blank" class="flex items-center gap-3 text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-all hover:translate-x-1"><span class="text-xl">▶️</span><span>YouTube</span></a>
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-12 pt-8 border-t border-gray-200 dark:border-gray-700">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+                <p class="text-sm text-gray-600 dark:text-gray-400">&copy; {{ now|date:'Y' }} UFC Sobral. Todos os direitos reservados.</p>
+                <div class="flex items-center gap-6 text-sm text-gray-500 dark:text-gray-500">
+                    <a href="#" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Política de Privacidade</a>
+                    <a href="#" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Termos de Uso</a>
+                    <a href="#" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Mapa do Site</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+
+

@@ -1,0 +1,230 @@
+{% extends 'base.html' %}
+
+{% block title %}Nova Atividade - UFC Sobral{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <!-- Breadcrumb -->
+    <nav class="mb-8">
+        <ol class="flex items-center space-x-2 text-sm text-gray-500 dark:text-gray-400">
+            <li><a href="{% url 'activity_list' %}" class="hover:text-primary-600 dark:hover:text-primary-400">Atividades</a></li>
+            <li><i class="fas fa-chevron-right text-xs"></i></li>
+            <li class="text-gray-900 dark:text-white">Nova Atividade</li>
+        </ol>
+    </nav>
+    
+    <!-- Gradient header based on activity type -->
+    <div class="relative mb-8">
+        <div id="activity-gradient" class="absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-t-2xl"></div>
+        <div class="flex items-center space-x-4 pb-4 border-b border-gray-200 dark:border-gray-700 relative z-10">
+            <div id="activity-emoji" class="text-4xl mr-4" aria-hidden="true">📚</div>
+            <div class="flex-1">
+                <h2 class="text-3xl font-bold text-gray-900 dark:text-white">
+                    Nova Atividade
+                </h2>
+                <p class="text-gray-600 dark:text-gray-400 mt-2 font-light">
+                    Preencha os detalhes da atividade nos campos abaixo
+                </p>
+            </div>
+        </div>
+    </div>
+    <!-- Formulário -->
+    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 border border-gray-100 dark:border-gray-700 relative overflow-hidden">
+        <form method="post" enctype="multipart/form-data" class="space-y-8">
+            {% csrf_token %}
+            
+            <!-- Informações Básicas -->
+            <div class="border-b border-gray-200 dark:border-gray-700 pb-6">
+                <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Informações Básicas</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <!-- Título -->
+                    <div class="group transform transition-all duration-200 hover:scale-[1.01] md:col-span-2">
+                        <label for="{{ form.title.id_for_label }}" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 flex items-center">
+                            <i class="fas fa-pen text-gray-500 dark:text-gray-400 mr-2"></i> Título *
+                        </label>
+                        {{ form.title }}
+                        {% if form.title.errors %}
+                            <div class="text-red-500 text-sm mt-1 animate-fadeIn flex items-center">
+                                <i class="fas fa-times-circle w-4 h-4 mr-1"></i>
+                                {{ form.title.errors.0 }}
+                            </div>
+                        {% endif %}
+                    </div>
+                    <!-- Tipo -->
+                    <div class="group transform transition-all duration-200 hover:scale-[1.01]">
+                        <label for="{{ form.type.id_for_label }}" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 flex items-center">
+                            <i class="fas fa-graduation-cap text-gray-500 dark:text-gray-400 mr-2"></i> Tipo *
+                        </label>
+                        {{ form.type }}
+                        {% if form.type.errors %}
+                            <div class="text-red-500 text-sm mt-1 animate-fadeIn flex items-center">
+                                <i class="fas fa-times-circle w-4 h-4 mr-1"></i>
+                                {{ form.type.errors.0 }}
+                            </div>
+                        {% endif %}
+                    </div>
+                    <!-- Status -->
+                    <div class="group transform transition-all duration-200 hover:scale-[1.01]">
+                        <label for="{{ form.status.id_for_label }}" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 flex items-center">
+                            <i class="fas fa-check-circle text-gray-500 dark:text-gray-400 mr-2"></i> Status *
+                        </label>
+                        {{ form.status }}
+                        {% if form.status.errors %}
+                            <div class="text-red-500 text-sm mt-1 animate-fadeIn flex items-center">
+                                <i class="fas fa-times-circle w-4 h-4 mr-1"></i>
+                                {{ form.status.errors.0 }}
+                            </div>
+                        {% endif %}
+                    </div>
+                    <!-- Descrição -->
+                    <div class="group transform transition-all duration-200 hover:scale-[1.01] md:col-span-2">
+                        <label for="{{ form.description.id_for_label }}" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 flex items-center">
+                            <i class="fas fa-file-alt text-gray-500 dark:text-gray-400 mr-2"></i> Descrição *
+                        </label>
+                        {{ form.description }}
+                        {% if form.description.errors %}
+                            <div class="text-red-500 text-sm mt-1 animate-fadeIn flex items-center">
+                                <i class="fas fa-times-circle w-4 h-4 mr-1"></i>
+                                {{ form.description.errors.0 }}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Datas e Horários -->
+            <div class="border-b border-gray-200 dark:border-gray-700 pb-6">
+                <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Datas e Horários</h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <!-- Data de Início -->
+                    <div class="group transform transition-all duration-200 hover:scale-[1.01]">
+                        <label for="{{ form.start_date.id_for_label }}" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 flex items-center">
+                            <i class="fas fa-calendar-alt text-gray-500 dark:text-gray-400 mr-2"></i> Data de Início *
+                        </label>
+                        {{ form.start_date }}
+                        {% if form.start_date.errors %}
+                            <div class="text-red-500 text-sm mt-1 animate-fadeIn flex items-center">
+                                <i class="fas fa-times-circle w-4 h-4 mr-1"></i>
+                                {{ form.start_date.errors.0 }}
+                            </div>
+                        {% endif %}
+                    </div>
+                    <!-- Data de Fim -->
+                    <div class="group transform transition-all duration-200 hover:scale-[1.01]">
+                        <label for="{{ form.end_date.id_for_label }}" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 flex items-center">
+                            <i class="fas fa-calendar-alt text-gray-500 dark:text-gray-400 mr-2"></i> Data de Fim *
+                        </label>
+                        {{ form.end_date }}
+                        {% if form.end_date.errors %}
+                            <div class="text-red-500 text-sm mt-1 animate-fadeIn flex items-center">
+                                <i class="fas fa-times-circle w-4 h-4 mr-1"></i>
+                                {{ form.end_date.errors.0 }}
+                            </div>
+                        {% endif %}
+                    </div>
+                    <!-- Horário -->
+                    <div class="group transform transition-all duration-200 hover:scale-[1.01]">
+                        <label for="{{ form.time.id_for_label }}" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 flex items-center">
+                            <i class="fas fa-clock text-gray-500 dark:text-gray-400 mr-2"></i> Horário
+                        </label>
+                        {{ form.time }}
+                        {% if form.time.errors %}
+                            <div class="text-red-500 text-sm mt-1 animate-fadeIn flex items-center">
+                                <i class="fas fa-times-circle w-4 h-4 mr-1"></i>
+                                {{ form.time.errors.0 }}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            <!-- Local e Coordenação -->
+            <div class="border-b border-gray-200 dark:border-gray-700 pb-6">
+                <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Local e Coordenação</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <!-- Local -->
+                    <div class="group transform transition-all duration-200 hover:scale-[1.01]">
+                        <label for="{{ form.location.id_for_label }}" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 flex items-center">
+                            <i class="fas fa-map-marker-alt text-gray-500 dark:text-gray-400 mr-2"></i> Local *
+                        </label>
+                        {{ form.location }}
+                        {% if form.location.errors %}
+                            <div class="text-red-500 text-sm mt-1 animate-fadeIn flex items-center">
+                                <i class="fas fa-times-circle w-4 h-4 mr-1"></i>
+                                {{ form.location.errors.0 }}
+                            </div>
+                        {% endif %}
+                    </div>
+                    <!-- Coordenador -->
+                    <div class="group transform transition-all duration-200 hover:scale-[1.01]">
+                        <label for="{{ form.coordinator.id_for_label }}" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 flex items-center">
+                            <i class="fas fa-user text-gray-500 dark:text-gray-400 mr-2"></i> Coordenador *
+                        </label>
+                        {{ form.coordinator }}
+                        {% if form.coordinator.errors %}
+                            <div class="text-red-500 text-sm mt-1 animate-fadeIn flex items-center">
+                                <i class="fas fa-times-circle w-4 h-4 mr-1"></i>
+                                {{ form.coordinator.errors.0 }}
+                            </div>
+                        {% endif %}
+                    </div>
+                    <!-- Participantes -->
+                    <div class="group transform transition-all duration-200 hover:scale-[1.01]">
+                        <label for="{{ form.participants.id_for_label }}" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 flex items-center">
+                            <i class="fas fa-users text-gray-500 dark:text-gray-400 mr-2"></i> Número de Participantes
+                        </label>
+                        {{ form.participants }}
+                        {% if form.participants.errors %}
+                            <div class="text-red-500 text-sm mt-1 animate-fadeIn flex items-center">
+                                <i class="fas fa-times-circle w-4 h-4 mr-1"></i>
+                                {{ form.participants.errors.0 }}
+                            </div>
+                        {% endif %}
+                    </div>
+                    <!-- Imagem -->
+                    <div class="group transform transition-all duration-200 hover:scale-[1.01]">
+                        <label for="{{ form.image.id_for_label }}" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 flex items-center">
+                            <i class="fas fa-image text-gray-500 dark:text-gray-400 mr-2"></i> Imagem
+                        </label>
+                        {{ form.image }}
+                        {% if form.image.errors %}
+                            <div class="text-red-500 text-sm mt-1 animate-fadeIn flex items-center">
+                                <i class="fas fa-times-circle w-4 h-4 mr-1"></i>
+                                {{ form.image.errors.0 }}
+                            </div>
+                        {% endif %}
+                        <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Formatos aceitos: JPG, PNG. Tamanho máximo: 5MB</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Tags e Requisitos -->
+            <div>
+                <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Tags e Requisitos</h2>
+                <div class="space-y-6">
+                    <!-- Tags -->
+                    {% if form.tags %}
+                    {% endif %}
+</div>
+
+<script>
+// Validação de datas
+document.addEventListener('DOMContentLoaded', function() {
+    const startDate = document.getElementById('{{ form.start_date.id_for_label }}');
+    const endDate = document.getElementById('{{ form.end_date.id_for_label }}');
+    
+    function validateDates() {
+        if (startDate.value && endDate.value) {
+            if (new Date(startDate.value) > new Date(endDate.value)) {
+                endDate.setCustomValidity('A data de fim deve ser posterior à data de início');
+            } else {
+                endDate.setCustomValidity('');
+            }
+        }
+    }
+    
+    startDate.addEventListener('change', validateDates);
+    endDate.addEventListener('change', validateDates);
+});
+</script>
+{% endblock %}
+

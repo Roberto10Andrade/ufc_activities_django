@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="{% if request.session.dark_theme %}dark{% endif %}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}UFC Sobral Activities{% endblock %}</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#eff6ff',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            700: '#1d4ed8',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Tailwind extensions -->
+    <style type="text/tailwindcss">
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --primary-color: #3b82f6;
+  --primary-color-dark: #2563eb;
+  --primary-color-rgb: 59, 130, 246;
+  --primary-color-text: #ffffff;
+  --primary-color-text-dark: #ffffff;
+  --secondary-color: #f59e0b;
+  --secondary-color-rgb: 245, 158, 11;
+  --accent-color: #ec4899;
+  --background-color: #f0f9ff;
+  --card-background: #ffffff;
+  --text-color: #1e293b;
+  --shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 12px 24px rgba(0, 0, 0, 0.12);
+  --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --border-radius: 1rem;
+  --border-radius-sm: 0.5rem;
+  --border-radius-lg: 1.5rem;
+  --font-size-base: 16px;
+  --font-size-normal: 16px;
+  --font-size-large: 18px;
+  --font-size-larger: 20px;
+}
+
+.dark {
+  --primary-color: #60a5fa;
+  --primary-color-dark: #3b82f6;
+  --primary-color-text: #ffffff;
+  --primary-color-text-dark: #ffffff;
+  --secondary-color: #fbbf24;
+  --accent-color: #f472b6;
+  --background-color: #0f172a;
+  --card-background: #1e293b;
+  --text-color: #f8fafc;
+  --shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.2);
+  --shadow-lg: 0 12px 24px rgba(0, 0, 0, 0.3);
+}
+
+@layer base {
+  body {
+    @apply m-0 p-0 min-h-screen;
+    font-size: var(--font-size-base);
+    line-height: 1.7;
+    transition: var(--transition);
+    background-color: var(--background-color);
+    color: var(--text-color);
+    background-image:
+      radial-gradient(circle at top right, rgba(59,130,246,0.08), transparent 70%),
+      radial-gradient(circle at bottom left, rgba(245,158,11,0.08), transparent 70%);
+  }
+}
+
+@layer components {
+  .nav-link { @apply relative overflow-hidden w-full transition-all duration-200; }
+  .nav-link:hover svg { @apply scale-110 transform; }
+  .nav-link.active { @apply bg-white/20 font-medium; }
+  .nav-link.active::before { @apply content-[''] absolute left-0 top-0 h-full w-1 bg-white rounded-r; }
+  .search-container { @apply relative; }
+  .search-input { @apply w-full bg-white/10 border border-white/20 text-white rounded-xl pl-10 pr-4 py-2 focus:outline-none focus:border-white/50 focus:bg-white/20 transition-all duration-300; }
+  .search-input::placeholder { @apply text-white/60; }
+}
+
+@layer utilities {
+  .mask-image { mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='currentColor'%3E%3Cpath d='M12 4.5v15m7.5-7.5h-15'/%3E%3C/svg%3E"); }
+}
+    </style>
+    
+    <!-- Custom CSS -->
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/custom.css' %}">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors duration-300" 
+      data-font-size="normal" data-contrast="normal" data-dyslexia="false">
+    
+    <!-- Controles de Acessibilidade -->
+    <div id="accessibility-controls" class="fixed top-4 right-4 z-50 bg-white dark:bg-gray-800 rounded-lg shadow-lg p-4 hidden">
+        <h3 class="text-sm font-semibold mb-3">Acessibilidade</h3>
+        
+        <!-- Tamanho da Fonte -->
+        <div class="mb-3">
+            <label class="text-xs text-gray-600 dark:text-gray-400">Tamanho da Fonte</label>
+            <div class="flex gap-1 mt-1">
+                <button onclick="setFontSize('normal')" class="px-2 py-1 text-xs bg-gray-100 dark:bg-gray-700 rounded">Normal</button>
+                <button onclick="setFontSize('large')" class="px-2 py-1 text-xs bg-gray-100 dark:bg-gray-700 rounded">Grande</button>
+                <button onclick="setFontSize('larger')" class="px-2 py-1 text-xs bg-gray-100 dark:bg-gray-700 rounded">Maior</button>
+            </div>
+        </div>
+        
+        <!-- Contraste -->
+        <div class="mb-3">
+            <label class="text-xs text-gray-600 dark:text-gray-400">Contraste</label>
+            <div class="flex gap-1 mt-1">
+                <button onclick="setContrast('normal')" class="px-2 py-1 text-xs bg-gray-100 dark:bg-gray-700 rounded">Normal</button>
+                <button onclick="setContrast('high')" class="px-2 py-1 text-xs bg-gray-100 dark:bg-gray-700 rounded">Alto</button>
+                <button onclick="setContrast('inverted')" class="px-2 py-1 text-xs bg-gray-100 dark:bg-gray-700 rounded">Invertido</button>
+            </div>
+        </div>
+        
+        <!-- Fonte para Dislexia -->
+        <div>
+            <label class="flex items-center text-xs">
+                <input type="checkbox" onchange="toggleDyslexiaFont()" class="mr-2">
+                Fonte para Dislexia
+            </label>
+        </div>
+    </div>
+    
+    <!-- Layout com Sidebar -->
+    <div class="min-h-screen flex bg-gray-50 dark:bg-gray-900">
+        <!-- Botão toggle sidebar -->
+        <button id="sidebar-toggle" class="fixed z-50 top-4 left-4 p-2 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 rounded-lg shadow hover:bg-gray-100 dark:hover:bg-gray-700" aria-label="Alternar menu">
+            <i class="fas fa-bars"></i>
+        </button>
+        <!-- Sidebar -->
+        <aside id="sidebar" class="md:flex md:flex-col w-64 bg-primary-600 text-white p-4 space-y-4 hidden md:hidden">
+            <!-- Logo -->
+            <div class="flex items-center space-x-2 mb-2">
+                {% load static %}
+                <img src="{% static 'images/Imagem1.png' %}" alt="UFC Sobral" class="w-full h-auto object-contain" />
+            </div>
+            <!-- Busca -->
+            <div>
+                <form action="{% url 'activity_list' %}" method="get">
+                    <div class="relative">
+                        <input name="q" type="text" placeholder="Pesquisar atividade" class="w-full pl-9 pr-3 py-2 rounded-lg text-gray-900 placeholder-gray-500 focus:outline-none"/>
+                        <i class="fas fa-search absolute left-3 top-2.5 text-gray-500"></i>
+                    </div>
+                </form>
+            </div>
+            <!-- Menu principal -->
+            <nav class="flex-1">
+                <p class="text-xs uppercase tracking-wider opacity-80 mb-2">Menu Principal</p>
+                <ul class="space-y-1">
+                    <li><a href="{% url 'dashboard' %}" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-primary-700"><i class="fas fa-home"></i><span>Início</span></a></li>
+                    <li><a href="{% url 'activity_list' %}" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-primary-700"><i class="fas fa-chart-bar"></i><span>Dashboard</span></a></li>
+                    <li><a href="{% url 'activity_create' %}" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-primary-700"><i class="fas fa-plus"></i><span>Nova Atividade</span></a></li>
+                    <li><a href="{% url 'activity_list' %}" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-primary-700"><i class="fas fa-calendar"></i><span>Atividades</span></a></li>
+                </ul>
+                <p class="text-xs uppercase tracking-wider opacity-80 mt-6 mb-2">Configurações</p>
+                <ul class="space-y-1">
+                    <li><a href="#" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-primary-700"><i class="fas fa-user"></i><span>Perfil</span></a></li>
+                    <li><button type="button" onclick="toggleTheme()" class="w-full text-left flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-primary-700"><i class="fas fa-adjust"></i><span>Tema</span></button></li>
+                </ul>
+            </nav>
+            <!-- Usuário -->
+            <div class="mt-auto bg-primary-700/40 rounded-lg p-3">
+                <div class="flex items-center gap-3">
+                    <div class="w-9 h-9 rounded-full bg-white/20 grid place-items-center"><i class="fas fa-bolt"></i></div>
+                    <div class="text-sm leading-tight">
+                        <p class="font-medium">Usuário</p>
+                        <p class="opacity-90">Administrador</p>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Conteúdo -->
+        <div id="contentWrapper" class="flex-1 flex flex-col min-w-0 without-sidebar">
+            <!-- Topbar reduzida -->
+            <div class="md:hidden flex items-center justify-between px-4 h-14 bg-white dark:bg-gray-800 border-b border-gray-700">
+                <div class="flex items-center gap-2">
+                    <i class="fas fa-university text-primary-600 text-xl"></i>
+                    <span class="font-semibold">UFC Sobral</span>
+                </div>
+                <div class="flex items-center gap-3">
+                    <button onclick="toggleAccessibility()" class="p-2 text-gray-500 dark:text-gray-400"><i class="fas fa-universal-access"></i></button>
+                    <button onclick="toggleTheme()" class="p-2 text-gray-500 dark:text-gray-400"><i class="fas fa-adjust"></i></button>
+                </div>
+            </div>
+    
+    <!-- Messages -->
+    {% if messages %}
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-4">
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4" role="alert">
+                    <span class="block sm:inline">{{ message }}</span>
+                    <button onclick="this.parentElement.remove()" class="float-right text-green-700 hover:text-green-900">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+    
+    <!-- Main Content -->
+    <main class="min-h-screen">
+        {% block content %}{% endblock %}
+    </main>
+    
+    <!-- Footer custom -->
+    {% include 'partials/footer.html' %}
+    </div> <!-- fecha wrapper do layout -->
+    
+    <!-- JavaScript -->
+    <script src="{% static 'js/accessibility.js' %}"></script>
+    <script src="{% static 'js/theme.js' %}"></script>
+    <script src="{% static 'js/main.js' %}"></script>
+    
+    {% block extra_js %}{% endblock %}
+</body>
+</html>
+
