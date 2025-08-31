@@ -4,7 +4,7 @@ Versão Multi-Page Application (MPA) do sistema de gerenciamento de atividades a
 
 ## 📋 Sobre o Projeto
 
-Esta é uma versão MPA (Multi-Page Application) do projeto original UFC Sobral Activities, convertida de Next.js para Django. O sistema permite o gerenciamento completo de atividades acadêmicas como cursos, workshops, seminários, projetos de pesquisa e extensão.
+O sistema permite o gerenciamento completo de atividades acadêmicas como cursos, workshops, seminários, projetos de pesquisa e extensão.
 
 ## ✨ Funcionalidades
 
@@ -174,88 +174,4 @@ python manage.py runserver 0.0.0.0:8000
 - **Contraste**: Cores que atendem às diretrizes WCAG
 - **Focus indicators**: Indicadores visuais claros
 
-## 🔄 Diferenças do Projeto Original
-
-### Arquitetura
-- **SPA → MPA**: Mudança de Single-Page para Multi-Page Application
-- **Next.js → Django**: Framework JavaScript para Python
-- **Client-side → Server-side**: Renderização no servidor
-
-### Funcionalidades Mantidas
-- ✅ Listagem de atividades com filtros
-- ✅ Detalhes de atividades
-- ✅ Sistema de busca
-- ✅ Interface responsiva
-- ✅ Tema claro/escuro
-
-### Funcionalidades Adicionadas
-- ✅ Sistema de autenticação completo
-- ✅ Dashboard com estatísticas
-- ✅ Painel administrativo
-- ✅ Criação/edição de atividades
-- ✅ Sistema de tags
-- ✅ Requisitos de atividades
-
-## 🚀 Deploy e Produção
-
-### Configurações de Produção
-Para deploy em produção, considere:
-
-1. **Configurar variáveis de ambiente**:
-```python
-DEBUG = False
-ALLOWED_HOSTS = ['seu-dominio.com']
-SECRET_KEY = 'sua-chave-secreta-segura'
-```
-
-2. **Usar banco de dados robusto**:
-```python
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'ufc_activities',
-        # ... outras configurações
-    }
-}
-```
-
-3. **Configurar arquivos estáticos**:
-```python
-STATIC_ROOT = '/caminho/para/static'
-MEDIA_ROOT = '/caminho/para/media'
-```
-
-4. **Usar servidor WSGI**:
-```bash
-gunicorn ufc_activities_django.wsgi:application
-```
-
-## 🤝 Contribuição
-
-1. Fork o projeto
-2. Crie uma branch para sua feature (`git checkout -b feature/AmazingFeature`)
-3. Commit suas mudanças (`git commit -m 'Add some AmazingFeature'`)
-4. Push para a branch (`git push origin feature/AmazingFeature`)
-5. Abra um Pull Request
-
-## 📄 Licença
-
-Este projeto está sob a licença MIT. Veja o arquivo `LICENSE` para mais detalhes.
-
-## 👥 Créditos
-
-- **Projeto Original**: [UFC Sobral Activities](https://github.com/Roberto10Andrade/ufc-sobral-activities)
-- **Conversão para Django**: Desenvolvido como versão MPA do sistema original
-- **Universidade Federal do Ceará - Campus Sobral**
-
-## 📞 Suporte
-
-Para suporte e dúvidas:
-- Abra uma issue no GitHub
-- Entre em contato através dos canais oficiais da UFC Sobral
-
----
-
-**UFC Sobral Activities - Django MPA** 🎓
-*Sistema de Gerenciamento de Atividades Acadêmicas*
 
