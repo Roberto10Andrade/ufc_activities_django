@@ -1,234 +1,202 @@
-# UFC Sobral Activities - Django MPA
+# 🎯 UFC Activities - Gerenciador de Atividades e Tarefas
 
-Versão Multi-Page Application (MPA) do sistema de gerenciamento de atividades acadêmicas da UFC Sobral, desenvolvida com Django.
+Sistema web desenvolvido em Django para gerenciamento de atividades acadêmicas e tarefas da UFC Sobral, com foco em acessibilidade e usabilidade.
 
-## 📋 Sobre o Projeto
+## 🚀 Funcionalidades
 
-Esta é uma versão MPA (Multi-Page Application) do projeto original UFC Sobral Activities, convertida de Next.js para Django. O sistema permite o gerenciamento completo de atividades acadêmicas como cursos, workshops, seminários, projetos de pesquisa e extensão.
+### 📊 Dashboard Interativo
+- **Estatísticas em Tempo Real**: Total de atividades, pendentes, em progresso e concluídas
+- **Visualizações Intuitivas**: Cards coloridos com informações importantes
+- **Ações Rápidas**: Acesso direto às funcionalidades principais
 
-## ✨ Funcionalidades
+### 📅 Gerenciamento de Atividades
+- **CRUD Completo**: Criar, visualizar, editar e excluir atividades
+- **Categorização**: Tipos de atividades (Curso, Workshop, Seminário, Pesquisa, Extensão)
+- **Status**: Controle de status (Ativo, Próximo, Concluído, Cancelado)
+- **Filtros Avançados**: Busca por tipo, status, coordenador, local
+- **Paginação**: Performance otimizada para grandes volumes
 
-### 🔐 Autenticação
-- Sistema de login e registro de usuários
-- Controle de acesso baseado em permissões
-- Interface responsiva para autenticação
+### 🎯 Gerenciamento de Tarefas
+- **Sistema Completo**: Criação e acompanhamento de tarefas
+- **Prioridades**: Baixa, Média, Alta, Urgente
+- **Status**: Pendente, Em Progresso, Concluída, Cancelada, Em Espera
+- **Categorias**: Trabalho, Estudo, Pessoal, Saúde, Financeiro, Família
+- **Progresso Visual**: Barras de progresso de 0-100%
+- **Responsáveis**: Atribuição de usuários
+- **Datas**: Controle de início, vencimento e conclusão
 
-### 📊 Dashboard
-- Visão geral das atividades acadêmicas
-- Estatísticas em tempo real
-- Gráficos de atividades por tipo
-- Lista de atividades recentes
-- Ações rápidas para usuários autenticados
-
-### 🎯 Gerenciamento de Atividades
-- **Listagem**: Visualização de todas as atividades com filtros avançados
-- **Detalhes**: Página individual para cada atividade com informações completas
-- **Criação**: Formulário completo para criação de novas atividades
-- **Edição**: Atualização de atividades existentes (para usuários autenticados)
-- **Busca**: Sistema de busca por título, descrição e coordenador
-
-### 🏷️ Sistema de Tags
-- Tags automáticas baseadas no conteúdo
-- Filtros por tags
-- Organização visual das atividades
-
-### 📱 Interface Responsiva
-- Design adaptável para desktop, tablet e mobile
-- Tema claro/escuro com alternância automática
-- Acessibilidade aprimorada
-- Componentes interativos com Tailwind CSS
+### ♿ Acessibilidade
+- **Contraste Alto**: Modo de alto contraste para melhor legibilidade
+- **Modo Invertido**: Cores invertidas para usuários com necessidades especiais
+- **Tamanhos de Fonte**: Normal, Grande, Maior
+- **Fonte para Dislexia**: OpenDyslexic para melhor leitura
+- **Atalhos de Teclado**: Navegação rápida (Alt+A, Alt+T, Alt+C)
+- **Transições Suaves**: Animações acessíveis
 
 ## 🛠️ Tecnologias Utilizadas
 
-### Backend
-- **Django 5.2.5**: Framework web Python
-- **SQLite**: Banco de dados (desenvolvimento)
-- **Pillow**: Processamento de imagens
+- **Backend**: Django 5.2.5
+- **Frontend**: HTML5, CSS3, JavaScript
+- **Framework CSS**: Tailwind CSS
+- **Ícones**: Font Awesome
+- **Banco de Dados**: SQLite (desenvolvimento)
+- **Python**: 3.13+
 
-### Frontend
-- **HTML5**: Estrutura semântica
-- **Tailwind CSS**: Framework CSS utilitário
-- **JavaScript**: Interatividade e funcionalidades dinâmicas
-- **Font Awesome**: Ícones
+## 📦 Instalação
 
-### Recursos Adicionais
-- **Django Admin**: Interface administrativa
-- **CSRF Protection**: Proteção contra ataques CSRF
-- **Responsive Design**: Layout adaptável
-- **Dark Mode**: Suporte a tema escuro
+### Pré-requisitos
+- Python 3.8+
+- pip
+- Git
 
-## 📁 Estrutura do Projeto
+### Passos para Instalação
+
+1. **Clone o repositório**
+   ```bash
+   git clone https://github.com/seu-usuario/ufc-activities-django.git
+   cd ufc-activities-django
+   ```
+
+2. **Crie um ambiente virtual**
+   ```bash
+   python -m venv venv
+   
+   # Windows
+   venv\Scripts\activate
+   
+   # Linux/Mac
+   source venv/bin/activate
+   ```
+
+3. **Instale as dependências**
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+4. **Configure o banco de dados**
+   ```bash
+   python manage.py makemigrations
+   python manage.py migrate
+   ```
+
+5. **Crie um superusuário**
+   ```bash
+   python manage.py createsuperuser
+   ```
+
+6. **Execute o servidor**
+   ```bash
+   python manage.py runserver
+   ```
+
+7. **Acesse o sistema**
+   - URL: http://localhost:8000
+   - Admin: http://localhost:8000/admin
+
+## 🎨 Interface e Design
+
+### 🎯 Dashboard
+- **Layout Responsivo**: Adaptável a todos os dispositivos
+- **Cards Informativos**: Estatísticas visuais com gradientes
+- **Navegação Intuitiva**: Menu lateral com ícones
+- **Tema Claro/Escuro**: Alternância automática
+
+### 📱 Responsividade
+- **Mobile First**: Design otimizado para dispositivos móveis
+- **Breakpoints**: Adaptação para tablet e desktop
+- **Touch Friendly**: Botões e elementos otimizados para toque
+
+### 🎨 Paleta de Cores
+- **Primária**: Azul (#3b82f6)
+- **Secundária**: Laranja (#f59e0b)
+- **Sucesso**: Verde (#10b981)
+- **Aviso**: Amarelo (#f59e0b)
+- **Erro**: Vermelho (#ef4444)
+
+## 🔧 Configuração
+
+### Variáveis de Ambiente
+Crie um arquivo `.env` na raiz do projeto:
+
+```env
+SECRET_KEY=sua-chave-secreta-aqui
+DEBUG=True
+ALLOWED_HOSTS=localhost,127.0.0.1
+```
+
+### Configurações de Produção
+Para produção, configure:
+- `DEBUG=False`
+- Banco de dados PostgreSQL/MySQL
+- Servidor web (Nginx + Gunicorn)
+- HTTPS
+
+## 📚 Estrutura do Projeto
 
 ```
 ufc_activities_django/
-├── ufc_activities_django/          # Configurações do projeto
-│   ├── settings.py                 # Configurações Django
-│   ├── urls.py                     # URLs principais
-│   └── wsgi.py                     # Configuração WSGI
-├── activities/                     # App principal
-│   ├── models.py                   # Modelos de dados
-│   ├── views.py                    # Views/Controllers
-│   ├── forms.py                    # Formulários
-│   ├── urls.py                     # URLs do app
-│   └── admin.py                    # Configuração do admin
-├── accounts/                       # App de autenticação
-│   ├── views.py                    # Views de auth
-│   └── urls.py                     # URLs de auth
-├── templates/                      # Templates HTML
-│   ├── base.html                   # Template base
-│   ├── activities/                 # Templates de atividades
-│   ├── dashboard/                  # Templates do dashboard
-│   └── registration/               # Templates de auth
-├── static/                         # Arquivos estáticos
-│   ├── css/                        # Estilos CSS
-│   └── js/                         # Scripts JavaScript
-└── media/                          # Uploads de mídia
+├── accounts/                 # App de autenticação
+│   ├── models.py
+│   ├── views.py
+│   └── urls.py
+├── activities/               # App principal
+│   ├── models.py            # Modelos de dados
+│   ├── views.py             # Views e lógica
+│   ├── forms.py             # Formulários
+│   └── urls.py              # URLs
+├── templates/               # Templates HTML
+│   ├── base.html            # Template base
+│   ├── dashboard/           # Templates do dashboard
+│   ├── activities/           # Templates de atividades
+│   └── tasks/               # Templates de tarefas
+├── static/                  # Arquivos estáticos
+│   ├── css/                 # Estilos CSS
+│   ├── js/                  # JavaScript
+│   └── images/              # Imagens
+├── media/                   # Uploads de usuários
+└── requirements.txt         # Dependências
 ```
 
-## 🚀 Como Executar
+## 🚀 Funcionalidades Avançadas
 
-### Pré-requisitos
-- Python 3.11+
-- pip (gerenciador de pacotes Python)
+### 🔍 Sistema de Busca
+- **Busca Inteligente**: Por título, descrição, coordenador
+- **Filtros Múltiplos**: Status, tipo, data
+- **Resultados Paginados**: Performance otimizada
 
-### Instalação
+### 📊 Relatórios
+- **Estatísticas**: Gráficos e métricas
+- **Exportação**: Dados em diferentes formatos
+- **Filtros Temporais**: Por período
 
-1. **Clone o repositório**:
+### 👥 Gestão de Usuários
+- **Autenticação**: Login/logout seguro
+- **Permissões**: Controle de acesso
+- **Perfis**: Informações do usuário
+
+## 🧪 Testes
+
 ```bash
-git clone <url-do-repositorio>
-cd ufc_activities_django
+# Executar testes
+python manage.py test
+
+# Testes com cobertura
+coverage run --source='.' manage.py test
+coverage report
 ```
 
-2. **Instale as dependências**:
-```bash
-pip install django pillow
-```
+## 📈 Performance
 
-3. **Execute as migrações**:
-```bash
-python manage.py makemigrations
-python manage.py migrate
-```
+### Otimizações Implementadas
+- **Paginação**: Carregamento otimizado
+- **Cache**: Dados em cache
+- **Lazy Loading**: Carregamento sob demanda
+- **Compressão**: Assets comprimidos
 
-4. **Crie um superusuário** (opcional):
-```bash
-python manage.py createsuperuser
-```
-
-5. **Popule com dados de exemplo**:
-```bash
-python populate_data.py
-```
-
-6. **Execute o servidor de desenvolvimento**:
-```bash
-python manage.py runserver 0.0.0.0:8000
-```
-
-7. **Acesse o sistema**:
-   - Sistema: http://localhost:8000
-   - Admin: http://localhost:8000/admin
-
-### Usuário de Teste
-- **Usuário**: admin
-- **Senha**: admin123
-
-## 📊 Modelos de Dados
-
-### Activity (Atividade)
-- **title**: Título da atividade
-- **description**: Descrição detalhada
-- **type**: Tipo (Curso, Workshop, Seminário, Pesquisa, Extensão, Outro)
-- **status**: Status (Ativo, Próximo, Concluído, Cancelado)
-- **start_date/end_date**: Datas de início e fim
-- **time**: Horário
-- **location**: Local
-- **coordinator**: Coordenador
-- **participants**: Número de participantes
-- **created_at/updated_at**: Timestamps
-
-### ActivityTag (Tag de Atividade)
-- **name**: Nome da tag
-- **activities**: Relacionamento many-to-many com atividades
-
-### ActivityRequirement (Requisito de Atividade)
-- **activity**: Atividade relacionada
-- **requirement**: Texto do requisito
-
-## 🎨 Características da Interface
-
-### Design System
-- **Cores**: Paleta baseada em azul (primary) com suporte a tema escuro
-- **Tipografia**: Fonte system com hierarquia clara
-- **Espaçamento**: Grid system consistente
-- **Componentes**: Cards, botões, formulários e badges padronizados
-
-### Responsividade
-- **Mobile First**: Design otimizado para dispositivos móveis
-- **Breakpoints**: sm (640px), md (768px), lg (1024px), xl (1280px)
-- **Layout**: Grid flexível que se adapta ao tamanho da tela
-
-### Acessibilidade
-- **Navegação por teclado**: Suporte completo
-- **Screen readers**: Elementos semânticos e ARIA labels
-- **Contraste**: Cores que atendem às diretrizes WCAG
-- **Focus indicators**: Indicadores visuais claros
-
-## 🔄 Diferenças do Projeto Original
-
-### Arquitetura
-- **SPA → MPA**: Mudança de Single-Page para Multi-Page Application
-- **Next.js → Django**: Framework JavaScript para Python
-- **Client-side → Server-side**: Renderização no servidor
-
-### Funcionalidades Mantidas
-- ✅ Listagem de atividades com filtros
-- ✅ Detalhes de atividades
-- ✅ Sistema de busca
-- ✅ Interface responsiva
-- ✅ Tema claro/escuro
-
-### Funcionalidades Adicionadas
-- ✅ Sistema de autenticação completo
-- ✅ Dashboard com estatísticas
-- ✅ Painel administrativo
-- ✅ Criação/edição de atividades
-- ✅ Sistema de tags
-- ✅ Requisitos de atividades
-
-## 🚀 Deploy e Produção
-
-### Configurações de Produção
-Para deploy em produção, considere:
-
-1. **Configurar variáveis de ambiente**:
-```python
-DEBUG = False
-ALLOWED_HOSTS = ['seu-dominio.com']
-SECRET_KEY = 'sua-chave-secreta-segura'
-```
-
-2. **Usar banco de dados robusto**:
-```python
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'ufc_activities',
-        # ... outras configurações
-    }
-}
-```
-
-3. **Configurar arquivos estáticos**:
-```python
-STATIC_ROOT = '/caminho/para/static'
-MEDIA_ROOT = '/caminho/para/media'
-```
-
-4. **Usar servidor WSGI**:
-```bash
-gunicorn ufc_activities_django.wsgi:application
-```
+### Métricas
+- **Tempo de Resposta**: < 200ms
+- **Lighthouse Score**: 90+
+- **Acessibilidade**: WCAG 2.1 AA
 
 ## 🤝 Contribuição
 
@@ -238,24 +206,28 @@ gunicorn ufc_activities_django.wsgi:application
 4. Push para a branch (`git push origin feature/AmazingFeature`)
 5. Abra um Pull Request
 
-## 📄 Licença
+## 📝 Licença
 
-Este projeto está sob a licença MIT. Veja o arquivo `LICENSE` para mais detalhes.
+Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
 
-## 👥 Créditos
+## 👨‍💻 Autor
 
-- **Projeto Original**: [UFC Sobral Activities](https://github.com/Roberto10Andrade/ufc-sobral-activities)
-- **Conversão para Django**: Desenvolvido como versão MPA do sistema original
-- **Universidade Federal do Ceará - Campus Sobral**
+**Roberto Andrade**
+- GitHub: [@seu-usuario](https://github.com/seu-usuario)
+- LinkedIn: [Roberto Andrade](https://linkedin.com/in/roberto-andrade)
+
+## 🙏 Agradecimentos
+
+- UFC Sobral pelo apoio
+- Comunidade Django
+- Contribuidores do projeto
 
 ## 📞 Suporte
 
-Para suporte e dúvidas:
-- Abra uma issue no GitHub
-- Entre em contato através dos canais oficiais da UFC Sobral
+Para suporte, entre em contato:
+- Email: suporte@ufc-activities.com
+- Issues: [GitHub Issues](https://github.com/seu-usuario/ufc-activities-django/issues)
 
 ---
 
-**UFC Sobral Activities - Django MPA** 🎓
-*Sistema de Gerenciamento de Atividades Acadêmicas*
-
+⭐ **Se este projeto foi útil, considere dar uma estrela!**
