@@ -8,9 +8,9 @@
 <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
     <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden">
         <!-- Header com gradiente baseado no tipo -->
-        <div class="bg-gradient-to-br {% if activity.type == 'COURSE' %}from-blue-500 to-indigo-600{% elif activity.type == 'WORKSHOP' %}from-purple-500 to-violet-600{% elif activity.type == 'SEMINAR' %}from-emerald-500 to-teal-600{% elif activity.type == 'RESEARCH' %}from-amber-500 to-orange-600{% elif activity.type == 'EXTENSION' %}from-rose-500 to-pink-600{% else %}from-gray-500 to-slate-600{% endif %} h-48 flex items-center justify-center relative">
+        <div class="bg-gradient-to-br {{ activity.get_gradient_class }} h-48 flex items-center justify-center relative">
             <span class="text-8xl">
-                {% if activity.type == 'COURSE' %}📚{% elif activity.type == 'WORKSHOP' %}🛠️{% elif activity.type == 'SEMINAR' %}🎯{% elif activity.type == 'RESEARCH' %}🔬{% elif activity.type == 'EXTENSION' %}🤝{% else %}📌{% endif %}
+                {{ activity.get_icon }}
             </span>
             <div class="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-black/30 to-transparent"></div>
         </div>

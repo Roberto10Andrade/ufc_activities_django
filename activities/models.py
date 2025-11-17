@@ -44,6 +44,30 @@ class Activity(models.Model):
     
     def get_absolute_url(self):
         return reverse('activity_detail', kwargs={'pk': self.pk})
+    
+    def get_gradient_class(self):
+        """Retorna a classe de gradiente baseada no tipo da atividade"""
+        gradients = {
+            'COURSE': 'from-blue-500 to-indigo-600',
+            'WORKSHOP': 'from-purple-500 to-violet-600',
+            'SEMINAR': 'from-emerald-500 to-teal-600',
+            'RESEARCH': 'from-amber-500 to-orange-600',
+            'EXTENSION': 'from-rose-500 to-pink-600',
+            'OTHER': 'from-gray-500 to-slate-600'
+        }
+        return gradients.get(self.type, 'from-gray-500 to-slate-600')
+    
+    def get_icon(self):
+        """Retorna o ícone emoji baseado no tipo da atividade"""
+        icons = {
+            'COURSE': '📚',
+            'WORKSHOP': '🛠️',
+            'SEMINAR': '🎯',
+            'RESEARCH': '🔬',
+            'EXTENSION': '🤝',
+            'OTHER': '📌'
+        }
+        return icons.get(self.type, '📌')
 
 
 class ActivityTag(models.Model):

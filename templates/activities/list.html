@@ -188,9 +188,9 @@ document.addEventListener('DOMContentLoaded', function() {
                     <div id="activitiesContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 animate-fadeIn">
                         {% for activity in activities %}
                             <a href="{% url 'activity_detail' activity.pk %}" 
-                               class="group bg-white dark:bg-gray-800 shadow-md hover:shadow-lg rounded-lg overflow-hidden transition-all duration-300 border border-gray-100 dark:border-gray-700 flex flex-col h-full hover:border-blue-300 dark:hover:border-blue-700">
+                               class="group bg-white dark:bg-gray-800 shadow-md hover:shadow-lg rounded-lg overflow-hidden transition-all duration-300 border border-gray-100 dark:border-gray-700 flex flex-col h-full hover:border-blue-300 dark:hover:border-blue-700 hover:-translate-y-1">
                                 <!-- Barra gradiente no topo baseada no tipo -->
-                                <div class="h-3 w-full bg-gradient-to-r {% if activity.type == 'COURSE' %}from-blue-500 to-indigo-600{% elif activity.type == 'WORKSHOP' %}from-purple-500 to-violet-600{% elif activity.type == 'SEMINAR' %}from-emerald-500 to-teal-600{% elif activity.type == 'RESEARCH' %}from-amber-500 to-orange-600{% elif activity.type == 'EXTENSION' %}from-rose-500 to-pink-600{% else %}from-gray-500 to-slate-600{% endif %}"></div>
+                                <div class="h-3 w-full bg-gradient-to-r {{ activity.get_gradient_class }}"></div>
                                 
                                 <div class="p-5 flex-1 flex flex-col">
                                     <!-- Status, Tipo e Ícone -->
@@ -207,7 +207,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                         </div>
                                         <!-- Ícone do tipo -->
                                         <div class="text-2xl" aria-hidden="true">
-                                            {% if activity.type == 'COURSE' %}📚{% elif activity.type == 'WORKSHOP' %}🛠️{% elif activity.type == 'SEMINAR' %}🎯{% elif activity.type == 'RESEARCH' %}🔬{% elif activity.type == 'EXTENSION' %}🤝{% else %}📌{% endif %}
+                                            {{ activity.get_icon }}
                                         </div>
                                     </div>
                                     

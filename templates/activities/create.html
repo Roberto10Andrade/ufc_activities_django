@@ -3,365 +3,219 @@
 
 {% block title %}Nova Atividade - UFC Sobral{% endblock %}
 
-{% block extra_js %}
-<script>
-// Funções JavaScript para tipo de atividade
-function getActivityTypeIcon(type) {
-    const icons = {
-        'COURSE': '📚',
-        'WORKSHOP': '🛠️',
-        'SEMINAR': '🎯',
-        'RESEARCH': '🔬',
-        'EXTENSION': '🤝',
-        'OTHER': '📌'
-    };
-    return icons[type] || '📌';
-}
-
-function getActivityTypeGradient(type) {
-    const gradients = {
-        'COURSE': 'from-blue-500 to-indigo-600',
-        'WORKSHOP': 'from-purple-500 to-violet-600',
-        'SEMINAR': 'from-emerald-500 to-teal-600',
-        'RESEARCH': 'from-amber-500 to-orange-600',
-        'EXTENSION': 'from-rose-500 to-pink-600',
-        'OTHER': 'from-gray-500 to-slate-600'
-    };
-    return gradients[type] || 'from-gray-500 to-slate-600';
-}
-
-document.addEventListener('DOMContentLoaded', function() {
-    // Validação de datas
-    const startDate = document.getElementById('id_start_date');
-    const endDate = document.getElementById('id_end_date');
-    
-    function validateDates() {
-        if (startDate && endDate && startDate.value && endDate.value) {
-            if (new Date(startDate.value) > new Date(endDate.value)) {
-                endDate.setCustomValidity('A data de término deve ser posterior à data de início');
-                endDate.classList.add('border-red-300', 'dark:border-red-600');
-            } else {
-                endDate.setCustomValidity('');
-                endDate.classList.remove('border-red-300', 'dark:border-red-600');
-            }
-        }
-    }
-    
-    if (startDate) startDate.addEventListener('change', validateDates);
-    if (endDate) endDate.addEventListener('change', validateDates);
-    
-    // Sistema de Tags
-    const tagsInput = document.getElementById('tags-input');
-    const addTagBtn = document.getElementById('add-tag-btn');
-    const tagsContainer = document.getElementById('tags-container');
-    const tagsHiddenInput = document.getElementById('tags-hidden');
-    const selectedTags = [];
-    
-    function addTag(tagText) {
-        const trimmedTag = tagText.trim();
-        if (trimmedTag && !selectedTags.includes(trimmedTag)) {
-            selectedTags.push(trimmedTag);
-            
-            const tagElement = document.createElement('span');
-            tagElement.className = 'inline-flex items-center px-3 py-1 rounded-full text-sm bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200 animate-fadeIn';
-            tagElement.innerHTML = `
-                ${trimmedTag}
-                <button type="button" 
-                        class="ml-2 text-blue-600 hover:text-blue-800 dark:text-blue-300 dark:hover:text-blue-100 focus:outline-none" 
-                        onclick="removeTag('${trimmedTag}')">
-                    ×
-                </button>
-            `;
-            tagsContainer.appendChild(tagElement);
-            
-            updateTagsHiddenInput();
-            tagsInput.value = '';
-        }
-    }
-    
-    window.removeTag = function(tag) {
-        const index = selectedTags.indexOf(tag);
-        if (index > -1) {
-            selectedTags.splice(index, 1);
-            updateTagsHiddenInput();
-            
-            // Remover elemento visual
-            const tags = tagsContainer.querySelectorAll('span');
-            tags.forEach(tagEl => {
-                if (tagEl.textContent.includes(tag)) {
-                    tagEl.remove();
-                }
-            });
-        }
-    };
-    
-    function updateTagsHiddenInput() {
-        if (tagsHiddenInput) {
-            tagsHiddenInput.value = selectedTags.join(',');
-        }
-    }
-    
-    if (addTagBtn) {
-        addTagBtn.addEventListener('click', function(e) {
-            e.preventDefault();
-            if (tagsInput) addTag(tagsInput.value);
-        });
-    }
-    
-    if (tagsInput) {
-        tagsInput.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                e.preventDefault();
-                addTag(tagsInput.value);
-            }
-        });
-    }
-});
-</script>
-{% endblock %}
-
 {% block content %}
-<div class="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 py-8">
-    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-        <!-- Link Voltar -->
-        <nav class="mb-6">
-            <a href="{% url 'activity_list' %}" class="inline-flex items-center text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">
-                <i class="fas fa-arrow-left mr-2"></i>
-                Voltar para a lista
-            </a>
-        </nav>
-        
-        <!-- Card do Formulário -->
-        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl border border-gray-100 dark:border-gray-700 overflow-hidden">
-            <!-- Barra azul no topo -->
-            <div class="h-2 bg-blue-500"></div>
-            
-            <!-- Header com ícone colorido e título -->
-            <div class="bg-white dark:bg-gray-800 px-8 pt-8 pb-6 border-b border-gray-200 dark:border-gray-700">
-                <div class="flex items-center space-x-4">
-                    <!-- Ícone colorido (três retângulos sobrepostos) -->
-                    <div class="relative w-16 h-16">
-                        <div class="absolute w-12 h-12 rounded-lg bg-green-500 transform rotate-[-10deg]"></div>
-                        <div class="absolute w-12 h-12 rounded-lg bg-blue-500 transform rotate-[5deg] ml-1"></div>
-                        <div class="absolute w-12 h-12 rounded-lg bg-red-500 transform rotate-[15deg] ml-2"></div>
-                    </div>
-                    <div class="flex-1">
-                        <h2 class="text-3xl font-bold text-gray-900 dark:text-white">
-                            Nova Atividade
-                        </h2>
-                        <p class="text-gray-600 dark:text-gray-400 mt-1 text-sm">
-                            Preencha os detalhes da atividade nos campos abaixo
-                        </p>
-                    </div>
+<div class="max-w-4xl mx-auto p-6">
+    <!-- Breadcrumb -->
+    <nav class="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-400 mb-6">
+        <a href="{% url 'dashboard' %}" class="hover:text-blue-600 dark:hover:text-blue-400">
+            <i class="fas fa-home"></i>
+        </a>
+        <i class="fas fa-chevron-right text-xs"></i>
+        <a href="{% url 'activity_list' %}" class="hover:text-blue-600 dark:hover:text-blue-400">Atividades</a>
+        <i class="fas fa-chevron-right text-xs"></i>
+        <span class="text-gray-900 dark:text-white font-medium">Nova Atividade</span>
+    </nav>
+
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm overflow-hidden">
+        <div class="p-6">
+            <div class="flex items-center justify-between mb-6">
+                <h1 class="text-2xl font-bold text-gray-900 dark:text-white">
+                    Nova Atividade
+                </h1>
+                <a href="{% url 'activity_list' %}" 
+                   class="inline-flex items-center gap-2 text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300">
+                    ← Voltar para a lista
+                </a>
+            </div>
+
+            <!-- Barra azul -->
+            <div class="h-1 bg-blue-600 mb-6 -mx-6"></div>
+
+            <!-- Ícone e descrição -->
+            <div class="flex items-start gap-4 mb-8">
+                <div class="text-4xl">📚</div>
+                <div>
+                    <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-1">Nova Atividade</h2>
+                    <p class="text-sm text-gray-600 dark:text-gray-400">Preencha os detalhes da atividade nos campos abaixo</p>
                 </div>
             </div>
-            
+
             <!-- Formulário -->
-            <form method="post" enctype="multipart/form-data" class="p-8">
+            <form method="POST" enctype="multipart/form-data" class="space-y-6">
                 {% csrf_token %}
-                
+
+                <!-- Título -->
+                <div>
+                    <label for="{{ form.title.id_for_label }}" class="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        <i class="fas fa-pen text-gray-400"></i>
+                        Título
+                    </label>
+                    <input type="text" name="title" id="{{ form.title.id_for_label }}" value="{{ form.title.value|default:'' }}"
+                           class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                           placeholder="Curso de Programação Web" required>
+                    {% if form.title.errors %}
+                        <p class="mt-1 text-sm text-red-600">{{ form.title.errors|first }}</p>
+                    {% endif %}
+                </div>
+
+                <!-- Data de Início e Término -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <!-- Título -->
-                    <div class="md:col-span-2">
-                        <label for="{{ form.title.id_for_label }}" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 flex items-center">
-                            <i class="fas fa-pen text-gray-500 dark:text-gray-400 mr-2"></i>
-                            Título
-                        </label>
-                        <input type="text" 
-                               name="{{ form.title.name }}" 
-                               id="{{ form.title.id_for_label }}"
-                               class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors shadow-sm"
-                               placeholder="Digite o título da atividade"
-                               value="{{ form.title.value|default:'' }}"
-                               required>
-                        {% if form.title.errors %}
-                            <p class="text-red-500 text-sm mt-1">{{ form.title.errors.0 }}</p>
-                        {% endif %}
-                    </div>
-                    
-                    <!-- Data de Início -->
                     <div>
-                        <label for="{{ form.start_date.id_for_label }}" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 flex items-center">
-                            <i class="fas fa-calendar text-gray-500 dark:text-gray-400 mr-2"></i>
+                        <label for="{{ form.start_date.id_for_label }}" class="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                            <i class="fas fa-calendar text-gray-400"></i>
                             Data de Início
                         </label>
-                        <div class="relative">
-                            <input type="date" 
-                                   name="{{ form.start_date.name }}" 
-                                   id="{{ form.start_date.id_for_label }}"
-                                   class="w-full px-4 py-2 pr-10 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors shadow-sm"
-                                   value="{{ form.start_date.value|default:'' }}"
-                                   required>
-                            <i class="fas fa-calendar absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"></i>
-                        </div>
+                        <input type="date" name="start_date" id="{{ form.start_date.id_for_label }}" value="{{ form.start_date.value|date:'Y-m-d'|default:'' }}"
+                               class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500" required>
                         {% if form.start_date.errors %}
-                            <p class="text-red-500 text-sm mt-1">{{ form.start_date.errors.0 }}</p>
+                            <p class="mt-1 text-sm text-red-600">{{ form.start_date.errors|first }}</p>
                         {% endif %}
                     </div>
-                    
-                    <!-- Data de Término -->
                     <div>
-                        <label for="{{ form.end_date.id_for_label }}" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 flex items-center">
-                            <i class="fas fa-calendar text-gray-500 dark:text-gray-400 mr-2"></i>
+                        <label for="{{ form.end_date.id_for_label }}" class="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                            <i class="fas fa-calendar text-gray-400"></i>
                             Data de Término
                         </label>
-                        <div class="relative">
-                            <input type="date" 
-                                   name="{{ form.end_date.name }}" 
-                                   id="{{ form.end_date.id_for_label }}"
-                                   class="w-full px-4 py-2 pr-10 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors shadow-sm"
-                                   value="{{ form.end_date.value|default:'' }}"
-                                   required>
-                            <i class="fas fa-calendar absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"></i>
-                        </div>
+                        <input type="date" name="end_date" id="{{ form.end_date.id_for_label }}" value="{{ form.end_date.value|date:'Y-m-d'|default:'' }}"
+                               class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500" required>
                         {% if form.end_date.errors %}
-                            <p class="text-red-500 text-sm mt-1">{{ form.end_date.errors.0 }}</p>
+                            <p class="mt-1 text-sm text-red-600">{{ form.end_date.errors|first }}</p>
                         {% endif %}
                     </div>
-                    
-                    <!-- Tipo -->
+                </div>
+
+                <!-- Tipo e Local -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                        <label for="{{ form.type.id_for_label }}" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 flex items-center">
-                            <i class="fas fa-graduation-cap text-gray-500 dark:text-gray-400 mr-2"></i>
+                        <label for="{{ form.type.id_for_label }}" class="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                            <i class="fas fa-tag text-gray-400"></i>
                             Tipo
                         </label>
-                        <select name="{{ form.type.name }}" 
-                                id="{{ form.type.id_for_label }}"
-                                class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors shadow-sm"
-                                required>
-                            {% for choice in form.type.field.choices %}
-                                <option value="{{ choice.0 }}" {% if form.type.value == choice.0 or not form.type.value and choice.0 == 'COURSE' %}selected{% endif %}>{{ choice.1 }}</option>
+                        <select name="type" id="{{ form.type.id_for_label }}"
+                                class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                            {% for value, label in form.type.field.choices %}
+                                <option value="{{ value }}">{{ label }}</option>
                             {% endfor %}
                         </select>
                         {% if form.type.errors %}
-                            <p class="text-red-500 text-sm mt-1">{{ form.type.errors.0 }}</p>
+                            <p class="mt-1 text-sm text-red-600">{{ form.type.errors|first }}</p>
                         {% endif %}
                     </div>
-                    
-                    <!-- Local -->
                     <div>
-                        <label for="{{ form.location.id_for_label }}" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 flex items-center">
-                            <i class="fas fa-map-marker-alt text-gray-500 dark:text-gray-400 mr-2"></i>
+                        <label for="{{ form.location.id_for_label }}" class="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                            <i class="fas fa-map-marker-alt text-gray-400"></i>
                             Local
                         </label>
-                        <input type="text" 
-                               name="{{ form.location.name }}" 
-                               id="{{ form.location.id_for_label }}"
-                               class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors shadow-sm"
-                               placeholder="Ex: Laboratório de Informática 1"
-                               value="{{ form.location.value|default:'' }}"
-                               required>
+                        <input type="text" name="location" id="{{ form.location.id_for_label }}" value="{{ form.location.value|default:'' }}"
+                               class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                               placeholder="Laboratório de Informática 1" required>
                         {% if form.location.errors %}
-                            <p class="text-red-500 text-sm mt-1">{{ form.location.errors.0 }}</p>
+                            <p class="mt-1 text-sm text-red-600">{{ form.location.errors|first }}</p>
                         {% endif %}
                     </div>
-                    
-                    <!-- Status -->
+                </div>
+
+                <!-- Status, Coordenador e Participantes -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <div>
-                        <label for="{{ form.status.id_for_label }}" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 flex items-center">
-                            <i class="fas fa-clock text-gray-500 dark:text-gray-400 mr-2"></i>
+                        <label for="{{ form.status.id_for_label }}" class="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                            <i class="fas fa-info-circle text-gray-400"></i>
                             Status
                         </label>
-                        <select name="{{ form.status.name }}" 
-                                id="{{ form.status.id_for_label }}"
-                                class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors shadow-sm"
-                                required>
-                            {% for choice in form.status.field.choices %}
-                                <option value="{{ choice.0 }}" {% if form.status.value == choice.0 or not form.status.value and choice.0 == 'UPCOMING' %}selected{% endif %}>{{ choice.1 }}</option>
+                        <select name="status" id="{{ form.status.id_for_label }}"
+                                class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                            {% for value, label in form.status.field.choices %}
+                                <option value="{{ value }}">{{ label }}</option>
                             {% endfor %}
                         </select>
                         {% if form.status.errors %}
-                            <p class="text-red-500 text-sm mt-1">{{ form.status.errors.0 }}</p>
+                            <p class="mt-1 text-sm text-red-600">{{ form.status.errors|first }}</p>
                         {% endif %}
                     </div>
-                    
-                    <!-- Coordenador -->
                     <div>
-                        <label for="{{ form.coordinator.id_for_label }}" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 flex items-center">
-                            <i class="fas fa-user text-gray-500 dark:text-gray-400 mr-2"></i>
+                        <label for="{{ form.coordinator.id_for_label }}" class="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                            <i class="fas fa-user text-gray-400"></i>
                             Coordenador
                         </label>
-                        <input type="text" 
-                               name="{{ form.coordinator.name }}" 
-                               id="{{ form.coordinator.id_for_label }}"
-                               class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors shadow-sm"
-                               placeholder="Ex: Prof. João Silva"
-                               value="{{ form.coordinator.value|default:'' }}"
-                               required>
+                        <input type="text" name="coordinator" id="{{ form.coordinator.id_for_label }}" value="{{ form.coordinator.value|default:'' }}"
+                               class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                               placeholder="Prof. Carlos Silva" required>
                         {% if form.coordinator.errors %}
-                            <p class="text-red-500 text-sm mt-1">{{ form.coordinator.errors.0 }}</p>
+                            <p class="mt-1 text-sm text-red-600">{{ form.coordinator.errors|first }}</p>
                         {% endif %}
                     </div>
-                    
-                    <!-- Participantes -->
                     <div>
-                        <label for="{{ form.participants.id_for_label }}" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 flex items-center">
-                            <i class="fas fa-users text-gray-500 dark:text-gray-400 mr-2"></i>
+                        <label for="{{ form.participants.id_for_label }}" class="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                            <i class="fas fa-users text-gray-400"></i>
                             Participantes
                         </label>
-                        <input type="number" 
-                               name="{{ form.participants.name }}" 
-                               id="{{ form.participants.id_for_label }}"
-                               class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors shadow-sm"
-                               placeholder="0"
-                               min="0"
-                               value="{{ form.participants.value|default:0 }}">
+                        <input type="number" name="participants" id="{{ form.participants.id_for_label }}" value="{{ form.participants.value|default:'0' }}"
+                               class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                               placeholder="30" required>
                         {% if form.participants.errors %}
-                            <p class="text-red-500 text-sm mt-1">{{ form.participants.errors.0 }}</p>
+                            <p class="mt-1 text-sm text-red-600">{{ form.participants.errors|first }}</p>
                         {% endif %}
-                    </div>
-                    
-                    <!-- Descrição -->
-                    <div class="md:col-span-2">
-                        <label for="{{ form.description.id_for_label }}" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 flex items-center">
-                            <i class="fas fa-file-alt text-gray-500 dark:text-gray-400 mr-2"></i>
-                            Descrição
-                        </label>
-                        <textarea name="{{ form.description.name }}" 
-                                  id="{{ form.description.id_for_label }}"
-                                  rows="4"
-                                  class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors resize-y shadow-sm"
-                                  placeholder="Descreva os detalhes da atividade"
-                                  required>{{ form.description.value|default:'' }}</textarea>
-                        {% if form.description.errors %}
-                            <p class="text-red-500 text-sm mt-1">{{ form.description.errors.0 }}</p>
-                        {% endif %}
-                    </div>
-                    
-                    <!-- Tags -->
-                    <div class="md:col-span-2">
-                        <label for="tags-input" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 flex items-center">
-                            <i class="fas fa-tag text-gray-500 dark:text-gray-400 mr-2"></i>
-                            Tags
-                        </label>
-                        <div class="flex gap-2 flex-wrap mb-2" id="tags-container">
-                            <!-- Tags serão adicionadas aqui via JavaScript -->
-                        </div>
-                        <div class="flex gap-2">
-                            <input type="text" 
-                                   id="tags-input"
-                                   class="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors shadow-sm"
-                                   placeholder="Digite uma tag e pressione Enter">
-                            <button type="button" 
-                                    id="add-tag-btn"
-                                    class="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors flex items-center gap-2 shadow-sm hover:shadow-md">
-                                <i class="fas fa-plus"></i>
-                                Adicionar
-                            </button>
-                        </div>
-                        <input type="hidden" id="tags-hidden" name="tags" value="">
                     </div>
                 </div>
-                
-                <!-- Botões de ação -->
-                <div class="mt-8 pt-6 border-t border-gray-200 dark:border-gray-700 flex justify-end gap-4">
+
+                <!-- Descrição -->
+                <div>
+                    <label for="{{ form.description.id_for_label }}" class="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        <i class="fas fa-align-left text-gray-400"></i>
+                        Descrição
+                    </label>
+                    <textarea name="description" id="{{ form.description.id_for_label }}" rows="4"
+                              class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                              placeholder="Aprenda desenvolvimento web com HTML, CSS, JavaScript e React. Curso prático com projetos reais." required>{{ form.description.value|default:'' }}</textarea>
+                    {% if form.description.errors %}
+                        <p class="mt-1 text-sm text-red-600">{{ form.description.errors|first }}</p>
+                    {% endif %}
+                </div>
+
+                <!-- Tags -->
+                <div>
+                    <label class="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        <i class="fas fa-tags text-gray-400"></i>
+                        Tags
+                    </label>
+                    <div id="tagsContainer" class="flex flex-wrap gap-2 mb-3">
+                        <!-- Tags serão renderizadas aqui -->
+                    </div>
+                    <div class="flex gap-2">
+                        <input type="text" id="tagInput" placeholder="Digite uma tag e pressione Enter"
+                               class="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                        <button type="button" id="addTagBtn" 
+                                class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2">
+                            <i class="fas fa-plus"></i>
+                            Adicionar
+                        </button>
+                    </div>
+                    <input type="hidden" name="tags" id="tagsField" value="">
+                </div>
+
+                <!-- Horário -->
+                <div>
+                    <label for="{{ form.time.id_for_label }}" class="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        <i class="fas fa-clock text-gray-400"></i>
+                        Horário (opcional)
+                    </label>
+                    <input type="text" name="time" id="{{ form.time.id_for_label }}" value="{{ form.time.value|default:'' }}"
+                           class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                           placeholder="14:00 - 18:00">
+                    {% if form.time.errors %}
+                        <p class="mt-1 text-sm text-red-600">{{ form.time.errors|first }}</p>
+                    {% endif %}
+                </div>
+
+                <!-- Botões -->
+                <div class="flex items-center justify-end gap-4 pt-6">
                     <a href="{% url 'activity_list' %}" 
-                       class="px-6 py-3 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors flex items-center gap-2 shadow-sm">
+                       class="px-6 py-2.5 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors font-medium flex items-center gap-2">
                         <i class="fas fa-times"></i>
                         Cancelar
                     </a>
                     <button type="submit" 
-                            class="px-6 py-3 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors flex items-center gap-2 shadow-lg hover:shadow-xl">
+                            class="px-6 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium shadow-lg hover:shadow-xl flex items-center gap-2">
                         <i class="fas fa-check"></i>
                         Criar Atividade
                     </button>
@@ -370,4 +224,58 @@ document.addEventListener('DOMContentLoaded', function() {
         </div>
     </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const tagInput = document.getElementById('tagInput');
+    const addTagBtn = document.getElementById('addTagBtn');
+    const tagsContainer = document.getElementById('tagsContainer');
+    const tagsField = document.getElementById('tagsField');
+    
+    function addTagToUI(tagText) {
+        if (!tagText) return;
+        
+        const tagEl = document.createElement('span');
+        tagEl.className = 'inline-flex items-center gap-1 px-3 py-1 bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200 rounded-full text-sm';
+        tagEl.innerHTML = `
+            ${tagText}
+            <button type="button" class="remove-tag text-blue-600 hover:text-blue-800 dark:text-blue-300 dark:hover:text-blue-100 ml-1">×</button>
+        `;
+        
+        tagEl.querySelector('.remove-tag').addEventListener('click', () => {
+            tagEl.remove();
+            updateTagsField();
+        });
+        
+        tagsContainer.appendChild(tagEl);
+        updateTagsField();
+    }
+    
+    function updateTagsField() {
+        const tags = Array.from(tagsContainer.querySelectorAll('span')).map(span => {
+            return span.textContent.replace('×', '').trim();
+        });
+        tagsField.value = tags.join(',');
+    }
+    
+    addTagBtn.addEventListener('click', () => {
+        const tag = tagInput.value.trim();
+        if (tag) {
+            addTagToUI(tag);
+            tagInput.value = '';
+        }
+    });
+    
+    tagInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            const tag = tagInput.value.trim();
+            if (tag) {
+                addTagToUI(tag);
+                tagInput.value = '';
+            }
+        }
+    });
+});
+</script>
 {% endblock %}
