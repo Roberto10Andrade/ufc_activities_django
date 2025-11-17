@@ -1,6 +1,24 @@
-<!-- Modal de Acessibilidade (abre ao lado do botão) -->
-<div id="accessibilityModal" class="hidden fixed left-80 top-0 z-50 p-4">
-    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl w-80 border-2 border-gray-100 dark:border-gray-700 animate-slideIn">
+<!-- Botão Flutuante de Acessibilidade -->
+<div class="fixed bottom-6 right-6 z-50">
+    <div class="relative group">
+        <button
+            onclick="toggleAccessibilityModal()"
+            id="accessibilityButton"
+            class="bg-gradient-to-r from-blue-600 to-blue-700 text-white p-4 rounded-full shadow-2xl hover:shadow-3xl hover:scale-110 transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-blue-500/50"
+            aria-label="Controles de acessibilidade"
+            aria-expanded="false">
+            <i class="fas fa-universal-access text-2xl"></i>
+        </button>
+        
+        <!-- Tooltip -->
+        <div id="accessibilityTooltip" class="absolute bottom-full right-0 mb-2 px-3 py-2 bg-gray-900 text-white text-sm rounded-lg shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap pointer-events-none">
+            Acessibilidade
+            <div class="absolute top-full right-6 -mt-1 border-4 border-transparent border-t-gray-900"></div>
+        </div>
+    </div>
+
+    <!-- Modal de Acessibilidade -->
+    <div id="accessibilityModal" class="hidden absolute bottom-20 right-0 bg-white dark:bg-gray-800 rounded-2xl shadow-2xl w-80 border-2 border-gray-100 dark:border-gray-700 animate-slideUp">
         <div class="p-6">
             <div class="flex items-center justify-between mb-6">
                 <h2 class="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
@@ -80,19 +98,19 @@
 </div>
 
 <style>
-.animate-slideIn {
-    animation: slideIn 0.2s ease-out;
-}
-
-@keyframes slideIn {
+@keyframes slideUp {
     from {
         opacity: 0;
-        transform: translateY(-10px) scale(0.95);
+        transform: translateY(20px) scale(0.95);
     }
     to {
         opacity: 1;
         transform: translateY(0) scale(1);
     }
+}
+
+.animate-slideUp {
+    animation: slideUp 0.2s ease-out;
 }
 
 /* Classes ativas para botões */
@@ -125,16 +143,15 @@ document.addEventListener('DOMContentLoaded', function() {
 
 function toggleAccessibilityModal() {
     const modal = document.getElementById('accessibilityModal');
-    modal.classList.toggle('hidden');
+    const button = document.getElementById('accessibilityButton');
+    const tooltip = document.getElementById('accessibilityTooltip');
     
-    // Posicionar o modal dinamicamente
+    modal.classList.toggle('hidden');
+    button.setAttribute('aria-expanded', modal.classList.contains('hidden') ? 'false' : 'true');
+    
+    // Esconder tooltip quando modal está aberto
     if (!modal.classList.contains('hidden')) {
-        // Calcular posição relativa ao botão
-        const sidebar = document.getElementById('sidebar');
-        if (sidebar) {
-            const sidebarWidth = sidebar.offsetWidth;
-            modal.style.left = `${sidebarWidth + 16}px`; // 16px = ml-4
-        }
+        tooltip.style.opacity = '0';
     }
 }
 
@@ -212,10 +229,10 @@ function toggleDyslexia() {
 // Fechar modal ao clicar fora
 document.addEventListener('click', function(e) {
     const modal = document.getElementById('accessibilityModal');
-    const btn = e.target.closest('[onclick*="toggleAccessibilityModal"]');
+    const button = document.getElementById('accessibilityButton');
     
-    if (!modal.contains(e.target) && !btn && !modal.classList.contains('hidden')) {
-        modal.classList.add('hidden');
+    if (!modal.contains(e.target) && !button.contains(e.target) && !modal.classList.contains('hidden')) {
+        toggleAccessibilityModal();
     }
 });
 </script>

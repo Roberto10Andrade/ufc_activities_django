@@ -189,13 +189,8 @@
                     </li>
                 </ul>
             </nav>
-            <!-- Acessibilidade -->
+            <!-- Usuário -->
             <div class="mt-auto pt-4 border-t border-blue-500/30">
-                <button onclick="toggleAccessibilityModal()" class="w-full flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-blue-700/50 transition-all duration-200 group mb-3">
-                    <i class="fas fa-universal-access text-lg group-hover:scale-110 transition-transform"></i>
-                    <span class="font-medium">Acessibilidade</span>
-                </button>
-                
                 {% if user.is_authenticated %}
                 <div class="bg-blue-700/30 rounded-xl p-4 mb-3">
                     <div class="flex items-center gap-3">
