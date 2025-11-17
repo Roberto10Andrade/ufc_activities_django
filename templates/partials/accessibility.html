@@ -1,0 +1,160 @@
+<!-- Controles de Acessibilidade -->
+<div id="accessibilityModal" class="hidden fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl max-w-md w-full p-6 animate-slideUp">
+        <div class="flex items-center justify-between mb-6">
+            <h3 class="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                <i class="fas fa-universal-access text-blue-600"></i>
+                Acessibilidade
+            </h3>
+            <button onclick="toggleAccessibilityModal()" class="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors">
+                <i class="fas fa-times text-gray-500 dark:text-gray-400"></i>
+            </button>
+        </div>
+
+        <div class="space-y-6">
+            <!-- Tamanho da Fonte -->
+            <div>
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
+                    Tamanho da Fonte
+                </label>
+                <div class="flex gap-2">
+                    <button onclick="setFontSize('normal')" 
+                            data-font-btn="normal"
+                            class="flex-1 px-4 py-2 border-2 border-gray-300 dark:border-gray-600 rounded-lg hover:border-blue-500 transition-colors font-medium">
+                        A
+                    </button>
+                    <button onclick="setFontSize('large')" 
+                            data-font-btn="large"
+                            class="flex-1 px-4 py-2 border-2 border-gray-300 dark:border-gray-600 rounded-lg hover:border-blue-500 transition-colors font-medium text-lg">
+                        A+
+                    </button>
+                    <button onclick="setFontSize('larger')" 
+                            data-font-btn="larger"
+                            class="flex-1 px-4 py-2 border-2 border-gray-300 dark:border-gray-600 rounded-lg hover:border-blue-500 transition-colors font-medium text-xl">
+                        A++
+                    </button>
+                </div>
+            </div>
+
+            <!-- Contraste -->
+            <div>
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
+                    Contraste
+                </label>
+                <div class="space-y-2">
+                    <button onclick="setContrast('normal')" 
+                            data-contrast-btn="normal"
+                            class="w-full px-4 py-2 border-2 border-gray-300 dark:border-gray-600 rounded-lg hover:border-blue-500 transition-colors text-left">
+                        Normal
+                    </button>
+                    <button onclick="setContrast('high')" 
+                            data-contrast-btn="high"
+                            class="w-full px-4 py-2 border-2 border-gray-300 dark:border-gray-600 rounded-lg hover:border-blue-500 transition-colors text-left">
+                        Alto Contraste
+                    </button>
+                    <button onclick="setContrast('inverted')" 
+                            data-contrast-btn="inverted"
+                            class="w-full px-4 py-2 border-2 border-gray-300 dark:border-gray-600 rounded-lg hover:border-blue-500 transition-colors text-left">
+                        Cores Invertidas
+                    </button>
+                </div>
+            </div>
+
+            <!-- Fonte para Dislexia -->
+            <div>
+                <label class="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-700 rounded-lg cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors">
+                    <span class="text-sm font-medium text-gray-700 dark:text-gray-300">
+                        Fonte para Dislexia
+                    </span>
+                    <div class="relative">
+                        <input type="checkbox" id="dyslexiaToggle" onchange="toggleDyslexia()" class="sr-only peer">
+                        <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-600 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
+                    </div>
+                </label>
+            </div>
+
+            <!-- Resetar -->
+            <button onclick="resetAccessibility()" 
+                    class="w-full px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors font-medium">
+                <i class="fas fa-undo mr-2"></i>
+                Restaurar Padrões
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Botão Flutuante de Acessibilidade -->
+<button onclick="toggleAccessibilityModal()" 
+        class="fixed bottom-6 right-6 w-14 h-14 bg-blue-600 hover:bg-blue-700 text-white rounded-full shadow-lg hover:shadow-xl transition-all z-40 flex items-center justify-center group"
+        aria-label="Abrir controles de acessibilidade">
+    <i class="fas fa-universal-access text-xl group-hover:scale-110 transition-transform"></i>
+</button>
+
+<script>
+// Carregar configurações salvas
+document.addEventListener('DOMContentLoaded', function() {
+    const savedFontSize = localStorage.getItem('fontSize') || 'normal';
+    const savedContrast = localStorage.getItem('contrast') || 'normal';
+    const savedDyslexia = localStorage.getItem('dyslexia') === 'true';
+    
+    setFontSize(savedFontSize);
+    setContrast(savedContrast);
+    if (savedDyslexia) {
+        document.getElementById('dyslexiaToggle').checked = true;
+        toggleDyslexia();
+    }
+});
+
+function toggleAccessibilityModal() {
+    const modal = document.getElementById('accessibilityModal');
+    modal.classList.toggle('hidden');
+}
+
+function setFontSize(size) {
+    document.documentElement.setAttribute('data-font-size', size);
+    localStorage.setItem('fontSize', size);
+    
+    // Atualizar botões
+    document.querySelectorAll('[data-font-btn]').forEach(btn => {
+        if (btn.getAttribute('data-font-btn') === size) {
+            btn.classList.add('border-blue-500', 'bg-blue-50', 'dark:bg-blue-900');
+        } else {
+            btn.classList.remove('border-blue-500', 'bg-blue-50', 'dark:bg-blue-900');
+        }
+    });
+}
+
+function setContrast(contrast) {
+    document.documentElement.setAttribute('data-contrast', contrast);
+    localStorage.setItem('contrast', contrast);
+    
+    // Atualizar botões
+    document.querySelectorAll('[data-contrast-btn]').forEach(btn => {
+        if (btn.getAttribute('data-contrast-btn') === contrast) {
+            btn.classList.add('border-blue-500', 'bg-blue-50', 'dark:bg-blue-900');
+        } else {
+            btn.classList.remove('border-blue-500', 'bg-blue-50', 'dark:bg-blue-900');
+        }
+    });
+}
+
+function toggleDyslexia() {
+    const isEnabled = document.getElementById('dyslexiaToggle').checked;
+    document.documentElement.setAttribute('data-dyslexia', isEnabled);
+    localStorage.setItem('dyslexia', isEnabled);
+}
+
+function resetAccessibility() {
+    setFontSize('normal');
+    setContrast('normal');
+    document.getElementById('dyslexiaToggle').checked = false;
+    toggleDyslexia();
+}
+
+// Fechar modal ao clicar fora
+document.getElementById('accessibilityModal').addEventListener('click', function(e) {
+    if (e.target === this) {
+        toggleAccessibilityModal();
+    }
+});
+</script>

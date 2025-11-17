@@ -176,14 +176,29 @@
                 </ul>
             </nav>
             <!-- Usuário -->
-            <div class="mt-auto bg-primary-700/40 rounded-lg p-3">
-                <div class="flex items-center gap-3">
-                    <div class="w-9 h-9 rounded-full bg-white/20 grid place-items-center"><i class="fas fa-bolt"></i></div>
-                    <div class="text-sm leading-tight">
-                        <p class="font-medium">Usuário</p>
-                        <p class="opacity-90">Administrador</p>
+            <div class="mt-auto space-y-2">
+                {% if user.is_authenticated %}
+                <div class="bg-primary-700/40 rounded-lg p-3">
+                    <div class="flex items-center gap-3">
+                        <div class="w-9 h-9 rounded-full bg-white/20 grid place-items-center text-white font-semibold">
+                            {{ user.username|first|upper }}
+                        </div>
+                        <div class="text-sm leading-tight flex-1">
+                            <p class="font-medium">{{ user.username }}</p>
+                            <p class="opacity-90 text-xs">{{ user.email|default:"Usuário" }}</p>
+                        </div>
                     </div>
                 </div>
+                <a href="{% url 'logout' %}" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-primary-700 transition-colors">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Sair</span>
+                </a>
+                {% else %}
+                <a href="{% url 'login' %}" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-primary-700 transition-colors">
+                    <i class="fas fa-sign-in-alt"></i>
+                    <span>Entrar</span>
+                </a>
+                {% endif %}
             </div>
         </aside>
 
@@ -223,6 +238,9 @@
     <!-- Footer custom -->
     {% include 'partials/footer.html' %}
     </div> <!-- fecha wrapper do layout -->
+    
+    <!-- Controles de Acessibilidade -->
+    {% include 'partials/accessibility.html' %}
     
     <!-- JavaScript -->
     <script src="{% static 'js/accessibility.js' %}"></script>
