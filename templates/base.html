@@ -151,10 +151,15 @@
         </button>
         <!-- Sidebar -->
         <aside id="sidebar" class="fixed left-0 top-0 h-screen w-64 bg-gradient-to-b from-blue-600 to-blue-800 text-white flex flex-col p-6 z-40 transition-transform duration-300">
-            <!-- Logo -->
-            <div class="flex items-center space-x-2 mb-2">
-                {% load static %}
-                <img src="{% static 'images/Imagem1.png' %}" alt="UFC Sobral" class="w-full h-auto object-contain" />
+            <!-- Header com Logo e Botão Toggle -->
+            <div class="flex items-center justify-between mb-4">
+                <div class="flex-1">
+                    {% load static %}
+                    <img src="{% static 'images/Imagem1.png' %}" alt="UFC Sobral" class="w-full h-auto object-contain" />
+                </div>
+                <button onclick="toggleSidebar()" class="ml-2 p-2 hover:bg-blue-700/50 rounded-lg transition-colors" aria-label="Ocultar menu">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
             </div>
             <!-- Busca -->
             <div>
@@ -186,6 +191,12 @@
                             <i class="fas fa-calendar text-lg group-hover:scale-110 transition-transform"></i>
                             <span class="font-medium">Atividades</span>
                         </a>
+                    </li>
+                    <li>
+                        <button onclick="toggleAccessibilityModal()" class="w-full flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-blue-700/50 transition-all duration-200 group">
+                            <i class="fas fa-universal-access text-lg group-hover:scale-110 transition-transform"></i>
+                            <span class="font-medium">Acessibilidade</span>
+                        </button>
                     </li>
                 </ul>
             </nav>
@@ -255,6 +266,24 @@
     <script src="{% static 'js/accessibility.js' %}"></script>
     <script src="{% static 'js/theme.js' %}"></script>
     <script src="{% static 'js/main.js' %}"></script>
+    
+    <script>
+    // Toggle Sidebar
+    function toggleSidebar() {
+        const sidebar = document.getElementById('sidebar');
+        const content = document.getElementById('contentWrapper');
+        
+        sidebar.classList.toggle('-translate-x-full');
+        
+        if (sidebar.classList.contains('-translate-x-full')) {
+            content.classList.remove('ml-64');
+            content.classList.add('ml-0');
+        } else {
+            content.classList.remove('ml-0');
+            content.classList.add('ml-64');
+        }
+    }
+    </script>
     
     {% block extra_js %}{% endblock %}
 </body>
