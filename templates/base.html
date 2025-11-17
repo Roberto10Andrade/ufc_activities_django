@@ -145,8 +145,8 @@
     <!-- Layout com Sidebar -->
     <div class="min-h-screen flex bg-gray-50 dark:bg-gray-900">
         <!-- Botão toggle sidebar -->
-        <button id="sidebar-toggle" class="fixed z-50 top-4 left-4 p-2 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 rounded-lg shadow hover:bg-gray-100 dark:hover:bg-gray-700" aria-label="Alternar menu">
-            <i class="fas fa-bars"></i>
+        <button id="sidebar-toggle" class="fixed z-50 top-4 p-2 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 rounded-lg shadow hover:bg-gray-100 dark:hover:bg-gray-700 toggle-sidebar-closed" aria-label="Alternar menu">
+            <i class="fas fa-bars" id="sidebar-toggle-icon"></i>
         </button>
         <!-- Sidebar -->
         <aside id="sidebar" class="md:flex md:flex-col w-64 bg-primary-600 text-white p-4 space-y-4 hidden md:hidden">
@@ -165,18 +165,14 @@
                 </form>
             </div>
             <!-- Menu principal -->
-            <nav class="flex-1">
+            <nav class="flex-1 relative">
                 <p class="text-xs uppercase tracking-wider opacity-80 mb-2">Menu Principal</p>
-                <ul class="space-y-1">
-                    <li><a href="{% url 'dashboard' %}" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-primary-700"><i class="fas fa-home"></i><span>Início</span></a></li>
-                    <li><a href="{% url 'activity_list' %}" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-primary-700"><i class="fas fa-chart-bar"></i><span>Dashboard</span></a></li>
-                    <li><a href="{% url 'activity_create' %}" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-primary-700"><i class="fas fa-plus"></i><span>Nova Atividade</span></a></li>
-                    <li><a href="{% url 'activity_list' %}" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-primary-700"><i class="fas fa-calendar"></i><span>Atividades</span></a></li>
-                </ul>
-                <p class="text-xs uppercase tracking-wider opacity-80 mt-6 mb-2">Configurações</p>
-                <ul class="space-y-1">
-                    <li><a href="#" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-primary-700"><i class="fas fa-user"></i><span>Perfil</span></a></li>
-                    <li><button type="button" onclick="toggleTheme()" class="w-full text-left flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-primary-700"><i class="fas fa-adjust"></i><span>Tema</span></button></li>
+                <ul class="space-y-1 relative">
+                    <!-- Indicador móvel -->
+                    <div id="nav-indicator" class="absolute left-0 w-1 bg-white rounded-r opacity-0" style="top: 0; height: 40px; transition: top 0.3s cubic-bezier(0.4, 0, 0.2, 1), height 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.2s ease-in-out;"></div>
+                    <li><a href="{% url 'dashboard' %}" class="nav-menu-link flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-primary-700 transition-colors relative"><i class="fas fa-home"></i><span>Início</span></a></li>
+                    <li><a href="{% url 'activity_create' %}" class="nav-menu-link flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-primary-700 transition-colors relative"><i class="fas fa-plus"></i><span>Nova Atividade</span></a></li>
+                    <li><a href="{% url 'activity_list' %}" class="nav-menu-link flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-primary-700 transition-colors relative"><i class="fas fa-calendar"></i><span>Atividades</span></a></li>
                 </ul>
             </nav>
             <!-- Usuário -->

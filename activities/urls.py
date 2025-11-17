@@ -2,7 +2,7 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    # Página inicial agora é o dashboard
+    # Página inicial é o dashboard
     path('', views.dashboard_view, name='dashboard'),
     # Lista de atividades
     path('atividades/', views.ActivityListView.as_view(), name='activity_list'),

@@ -1,6 +1,5 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
-from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
 from django.urls import reverse_lazy
 from django.db.models import Q, Count
@@ -53,7 +52,7 @@ class ActivityDetailView(DetailView):
     context_object_name = 'activity'
 
 
-class ActivityCreateView(LoginRequiredMixin, CreateView):
+class ActivityCreateView(CreateView):
     model = Activity
     form_class = ActivityForm
     template_name = 'activities/create.html'
@@ -64,17 +63,17 @@ class ActivityCreateView(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
 
-class ActivityUpdateView(LoginRequiredMixin, UpdateView):
+class ActivityUpdateView(UpdateView):
     model = Activity
     form_class = ActivityForm
-    template_name = 'activities/edit.html'
+    template_name = 'activities/update.html'
     
     def form_valid(self, form):
         messages.success(self.request, 'Atividade atualizada com sucesso!')
         return super().form_valid(form)
 
 
-class ActivityDeleteView(LoginRequiredMixin, DeleteView):
+class ActivityDeleteView(DeleteView):
     model = Activity
     template_name = 'activities/delete.html'
     success_url = reverse_lazy('activity_list')
@@ -95,3 +94,4 @@ def dashboard_view(request):
         'activities_by_type': Activity.objects.values('type').annotate(count=Count('type')),
     }
     return render(request, 'dashboard/index.html', context)
+

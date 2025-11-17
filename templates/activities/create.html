@@ -1,230 +1,373 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block title %}Nova Atividade - UFC Sobral{% endblock %}
 
-{% block content %}
-<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-    <!-- Breadcrumb -->
-    <nav class="mb-8">
-        <ol class="flex items-center space-x-2 text-sm text-gray-500 dark:text-gray-400">
-            <li><a href="{% url 'activity_list' %}" class="hover:text-primary-600 dark:hover:text-primary-400">Atividades</a></li>
-            <li><i class="fas fa-chevron-right text-xs"></i></li>
-            <li class="text-gray-900 dark:text-white">Nova Atividade</li>
-        </ol>
-    </nav>
-    
-    <!-- Gradient header based on activity type -->
-    <div class="relative mb-8">
-        <div id="activity-gradient" class="absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-t-2xl"></div>
-        <div class="flex items-center space-x-4 pb-4 border-b border-gray-200 dark:border-gray-700 relative z-10">
-            <div id="activity-emoji" class="text-4xl mr-4" aria-hidden="true">📚</div>
-            <div class="flex-1">
-                <h2 class="text-3xl font-bold text-gray-900 dark:text-white">
-                    Nova Atividade
-                </h2>
-                <p class="text-gray-600 dark:text-gray-400 mt-2 font-light">
-                    Preencha os detalhes da atividade nos campos abaixo
-                </p>
-            </div>
-        </div>
-    </div>
-    <!-- Formulário -->
-    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 border border-gray-100 dark:border-gray-700 relative overflow-hidden">
-        <form method="post" enctype="multipart/form-data" class="space-y-8">
-            {% csrf_token %}
-            
-            <!-- Informações Básicas -->
-            <div class="border-b border-gray-200 dark:border-gray-700 pb-6">
-                <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Informações Básicas</h2>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    <!-- Título -->
-                    <div class="group transform transition-all duration-200 hover:scale-[1.01] md:col-span-2">
-                        <label for="{{ form.title.id_for_label }}" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 flex items-center">
-                            <i class="fas fa-pen text-gray-500 dark:text-gray-400 mr-2"></i> Título *
-                        </label>
-                        {{ form.title }}
-                        {% if form.title.errors %}
-                            <div class="text-red-500 text-sm mt-1 animate-fadeIn flex items-center">
-                                <i class="fas fa-times-circle w-4 h-4 mr-1"></i>
-                                {{ form.title.errors.0 }}
-                            </div>
-                        {% endif %}
-                    </div>
-                    <!-- Tipo -->
-                    <div class="group transform transition-all duration-200 hover:scale-[1.01]">
-                        <label for="{{ form.type.id_for_label }}" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 flex items-center">
-                            <i class="fas fa-graduation-cap text-gray-500 dark:text-gray-400 mr-2"></i> Tipo *
-                        </label>
-                        {{ form.type }}
-                        {% if form.type.errors %}
-                            <div class="text-red-500 text-sm mt-1 animate-fadeIn flex items-center">
-                                <i class="fas fa-times-circle w-4 h-4 mr-1"></i>
-                                {{ form.type.errors.0 }}
-                            </div>
-                        {% endif %}
-                    </div>
-                    <!-- Status -->
-                    <div class="group transform transition-all duration-200 hover:scale-[1.01]">
-                        <label for="{{ form.status.id_for_label }}" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 flex items-center">
-                            <i class="fas fa-check-circle text-gray-500 dark:text-gray-400 mr-2"></i> Status *
-                        </label>
-                        {{ form.status }}
-                        {% if form.status.errors %}
-                            <div class="text-red-500 text-sm mt-1 animate-fadeIn flex items-center">
-                                <i class="fas fa-times-circle w-4 h-4 mr-1"></i>
-                                {{ form.status.errors.0 }}
-                            </div>
-                        {% endif %}
-                    </div>
-                    <!-- Descrição -->
-                    <div class="group transform transition-all duration-200 hover:scale-[1.01] md:col-span-2">
-                        <label for="{{ form.description.id_for_label }}" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 flex items-center">
-                            <i class="fas fa-file-alt text-gray-500 dark:text-gray-400 mr-2"></i> Descrição *
-                        </label>
-                        {{ form.description }}
-                        {% if form.description.errors %}
-                            <div class="text-red-500 text-sm mt-1 animate-fadeIn flex items-center">
-                                <i class="fas fa-times-circle w-4 h-4 mr-1"></i>
-                                {{ form.description.errors.0 }}
-                            </div>
-                        {% endif %}
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Datas e Horários -->
-            <div class="border-b border-gray-200 dark:border-gray-700 pb-6">
-                <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Datas e Horários</h2>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                    <!-- Data de Início -->
-                    <div class="group transform transition-all duration-200 hover:scale-[1.01]">
-                        <label for="{{ form.start_date.id_for_label }}" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 flex items-center">
-                            <i class="fas fa-calendar-alt text-gray-500 dark:text-gray-400 mr-2"></i> Data de Início *
-                        </label>
-                        {{ form.start_date }}
-                        {% if form.start_date.errors %}
-                            <div class="text-red-500 text-sm mt-1 animate-fadeIn flex items-center">
-                                <i class="fas fa-times-circle w-4 h-4 mr-1"></i>
-                                {{ form.start_date.errors.0 }}
-                            </div>
-                        {% endif %}
-                    </div>
-                    <!-- Data de Fim -->
-                    <div class="group transform transition-all duration-200 hover:scale-[1.01]">
-                        <label for="{{ form.end_date.id_for_label }}" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 flex items-center">
-                            <i class="fas fa-calendar-alt text-gray-500 dark:text-gray-400 mr-2"></i> Data de Fim *
-                        </label>
-                        {{ form.end_date }}
-                        {% if form.end_date.errors %}
-                            <div class="text-red-500 text-sm mt-1 animate-fadeIn flex items-center">
-                                <i class="fas fa-times-circle w-4 h-4 mr-1"></i>
-                                {{ form.end_date.errors.0 }}
-                            </div>
-                        {% endif %}
-                    </div>
-                    <!-- Horário -->
-                    <div class="group transform transition-all duration-200 hover:scale-[1.01]">
-                        <label for="{{ form.time.id_for_label }}" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 flex items-center">
-                            <i class="fas fa-clock text-gray-500 dark:text-gray-400 mr-2"></i> Horário
-                        </label>
-                        {{ form.time }}
-                        {% if form.time.errors %}
-                            <div class="text-red-500 text-sm mt-1 animate-fadeIn flex items-center">
-                                <i class="fas fa-times-circle w-4 h-4 mr-1"></i>
-                                {{ form.time.errors.0 }}
-                            </div>
-                        {% endif %}
-                    </div>
-                </div>
-            </div>
-            <!-- Local e Coordenação -->
-            <div class="border-b border-gray-200 dark:border-gray-700 pb-6">
-                <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Local e Coordenação</h2>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    <!-- Local -->
-                    <div class="group transform transition-all duration-200 hover:scale-[1.01]">
-                        <label for="{{ form.location.id_for_label }}" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 flex items-center">
-                            <i class="fas fa-map-marker-alt text-gray-500 dark:text-gray-400 mr-2"></i> Local *
-                        </label>
-                        {{ form.location }}
-                        {% if form.location.errors %}
-                            <div class="text-red-500 text-sm mt-1 animate-fadeIn flex items-center">
-                                <i class="fas fa-times-circle w-4 h-4 mr-1"></i>
-                                {{ form.location.errors.0 }}
-                            </div>
-                        {% endif %}
-                    </div>
-                    <!-- Coordenador -->
-                    <div class="group transform transition-all duration-200 hover:scale-[1.01]">
-                        <label for="{{ form.coordinator.id_for_label }}" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 flex items-center">
-                            <i class="fas fa-user text-gray-500 dark:text-gray-400 mr-2"></i> Coordenador *
-                        </label>
-                        {{ form.coordinator }}
-                        {% if form.coordinator.errors %}
-                            <div class="text-red-500 text-sm mt-1 animate-fadeIn flex items-center">
-                                <i class="fas fa-times-circle w-4 h-4 mr-1"></i>
-                                {{ form.coordinator.errors.0 }}
-                            </div>
-                        {% endif %}
-                    </div>
-                    <!-- Participantes -->
-                    <div class="group transform transition-all duration-200 hover:scale-[1.01]">
-                        <label for="{{ form.participants.id_for_label }}" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 flex items-center">
-                            <i class="fas fa-users text-gray-500 dark:text-gray-400 mr-2"></i> Número de Participantes
-                        </label>
-                        {{ form.participants }}
-                        {% if form.participants.errors %}
-                            <div class="text-red-500 text-sm mt-1 animate-fadeIn flex items-center">
-                                <i class="fas fa-times-circle w-4 h-4 mr-1"></i>
-                                {{ form.participants.errors.0 }}
-                            </div>
-                        {% endif %}
-                    </div>
-                    <!-- Imagem -->
-                    <div class="group transform transition-all duration-200 hover:scale-[1.01]">
-                        <label for="{{ form.image.id_for_label }}" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 flex items-center">
-                            <i class="fas fa-image text-gray-500 dark:text-gray-400 mr-2"></i> Imagem
-                        </label>
-                        {{ form.image }}
-                        {% if form.image.errors %}
-                            <div class="text-red-500 text-sm mt-1 animate-fadeIn flex items-center">
-                                <i class="fas fa-times-circle w-4 h-4 mr-1"></i>
-                                {{ form.image.errors.0 }}
-                            </div>
-                        {% endif %}
-                        <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Formatos aceitos: JPG, PNG. Tamanho máximo: 5MB</p>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Tags e Requisitos -->
-            <div>
-                <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Tags e Requisitos</h2>
-                <div class="space-y-6">
-                    <!-- Tags -->
-                    {% if form.tags %}
-                    {% endif %}
-</div>
-
+{% block extra_js %}
 <script>
-// Validação de datas
+// Funções JavaScript para tipo de atividade
+function getActivityTypeIcon(type) {
+    const icons = {
+        'COURSE': '📚',
+        'WORKSHOP': '🛠️',
+        'SEMINAR': '🎯',
+        'RESEARCH': '🔬',
+        'EXTENSION': '🤝',
+        'OTHER': '📌'
+    };
+    return icons[type] || '📌';
+}
+
+function getActivityTypeGradient(type) {
+    const gradients = {
+        'COURSE': 'from-blue-500 to-indigo-600',
+        'WORKSHOP': 'from-purple-500 to-violet-600',
+        'SEMINAR': 'from-emerald-500 to-teal-600',
+        'RESEARCH': 'from-amber-500 to-orange-600',
+        'EXTENSION': 'from-rose-500 to-pink-600',
+        'OTHER': 'from-gray-500 to-slate-600'
+    };
+    return gradients[type] || 'from-gray-500 to-slate-600';
+}
+
 document.addEventListener('DOMContentLoaded', function() {
-    const startDate = document.getElementById('{{ form.start_date.id_for_label }}');
-    const endDate = document.getElementById('{{ form.end_date.id_for_label }}');
+    // Validação de datas
+    const startDate = document.getElementById('id_start_date');
+    const endDate = document.getElementById('id_end_date');
     
     function validateDates() {
-        if (startDate.value && endDate.value) {
+        if (startDate && endDate && startDate.value && endDate.value) {
             if (new Date(startDate.value) > new Date(endDate.value)) {
-                endDate.setCustomValidity('A data de fim deve ser posterior à data de início');
+                endDate.setCustomValidity('A data de término deve ser posterior à data de início');
+                endDate.classList.add('border-red-300', 'dark:border-red-600');
             } else {
                 endDate.setCustomValidity('');
+                endDate.classList.remove('border-red-300', 'dark:border-red-600');
             }
         }
     }
     
-    startDate.addEventListener('change', validateDates);
-    endDate.addEventListener('change', validateDates);
+    if (startDate) startDate.addEventListener('change', validateDates);
+    if (endDate) endDate.addEventListener('change', validateDates);
+    
+    // Sistema de Tags
+    const tagsInput = document.getElementById('tags-input');
+    const addTagBtn = document.getElementById('add-tag-btn');
+    const tagsContainer = document.getElementById('tags-container');
+    const tagsHiddenInput = document.getElementById('tags-hidden');
+    const selectedTags = [];
+    
+    function addTag(tagText) {
+        const trimmedTag = tagText.trim();
+        if (trimmedTag && !selectedTags.includes(trimmedTag)) {
+            selectedTags.push(trimmedTag);
+            
+            const tagElement = document.createElement('span');
+            tagElement.className = 'inline-flex items-center px-3 py-1 rounded-full text-sm bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200 animate-fadeIn';
+            tagElement.innerHTML = `
+                ${trimmedTag}
+                <button type="button" 
+                        class="ml-2 text-blue-600 hover:text-blue-800 dark:text-blue-300 dark:hover:text-blue-100 focus:outline-none" 
+                        onclick="removeTag('${trimmedTag}')">
+                    ×
+                </button>
+            `;
+            tagsContainer.appendChild(tagElement);
+            
+            updateTagsHiddenInput();
+            tagsInput.value = '';
+        }
+    }
+    
+    window.removeTag = function(tag) {
+        const index = selectedTags.indexOf(tag);
+        if (index > -1) {
+            selectedTags.splice(index, 1);
+            updateTagsHiddenInput();
+            
+            // Remover elemento visual
+            const tags = tagsContainer.querySelectorAll('span');
+            tags.forEach(tagEl => {
+                if (tagEl.textContent.includes(tag)) {
+                    tagEl.remove();
+                }
+            });
+        }
+    };
+    
+    function updateTagsHiddenInput() {
+        if (tagsHiddenInput) {
+            tagsHiddenInput.value = selectedTags.join(',');
+        }
+    }
+    
+    if (addTagBtn) {
+        addTagBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            if (tagsInput) addTag(tagsInput.value);
+        });
+    }
+    
+    if (tagsInput) {
+        tagsInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                addTag(tagsInput.value);
+            }
+        });
+    }
 });
 </script>
 {% endblock %}
 
+{% block content %}
+<div class="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 py-8">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- Link Voltar -->
+        <nav class="mb-6">
+            <a href="{% url 'activity_list' %}" class="inline-flex items-center text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">
+                <i class="fas fa-arrow-left mr-2"></i>
+                Voltar para a lista
+            </a>
+        </nav>
+        
+        <!-- Card do Formulário -->
+        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl border border-gray-100 dark:border-gray-700 overflow-hidden">
+            <!-- Barra azul no topo -->
+            <div class="h-2 bg-blue-500"></div>
+            
+            <!-- Header com ícone colorido e título -->
+            <div class="bg-white dark:bg-gray-800 px-8 pt-8 pb-6 border-b border-gray-200 dark:border-gray-700">
+                <div class="flex items-center space-x-4">
+                    <!-- Ícone colorido (três retângulos sobrepostos) -->
+                    <div class="relative w-16 h-16">
+                        <div class="absolute w-12 h-12 rounded-lg bg-green-500 transform rotate-[-10deg]"></div>
+                        <div class="absolute w-12 h-12 rounded-lg bg-blue-500 transform rotate-[5deg] ml-1"></div>
+                        <div class="absolute w-12 h-12 rounded-lg bg-red-500 transform rotate-[15deg] ml-2"></div>
+                    </div>
+                    <div class="flex-1">
+                        <h2 class="text-3xl font-bold text-gray-900 dark:text-white">
+                            Nova Atividade
+                        </h2>
+                        <p class="text-gray-600 dark:text-gray-400 mt-1 text-sm">
+                            Preencha os detalhes da atividade nos campos abaixo
+                        </p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Formulário -->
+            <form method="post" enctype="multipart/form-data" class="p-8">
+                {% csrf_token %}
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Título -->
+                    <div class="md:col-span-2">
+                        <label for="{{ form.title.id_for_label }}" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 flex items-center">
+                            <i class="fas fa-pen text-gray-500 dark:text-gray-400 mr-2"></i>
+                            Título
+                        </label>
+                        <input type="text" 
+                               name="{{ form.title.name }}" 
+                               id="{{ form.title.id_for_label }}"
+                               class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors shadow-sm"
+                               placeholder="Digite o título da atividade"
+                               value="{{ form.title.value|default:'' }}"
+                               required>
+                        {% if form.title.errors %}
+                            <p class="text-red-500 text-sm mt-1">{{ form.title.errors.0 }}</p>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Data de Início -->
+                    <div>
+                        <label for="{{ form.start_date.id_for_label }}" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 flex items-center">
+                            <i class="fas fa-calendar text-gray-500 dark:text-gray-400 mr-2"></i>
+                            Data de Início
+                        </label>
+                        <div class="relative">
+                            <input type="date" 
+                                   name="{{ form.start_date.name }}" 
+                                   id="{{ form.start_date.id_for_label }}"
+                                   class="w-full px-4 py-2 pr-10 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors shadow-sm"
+                                   value="{{ form.start_date.value|default:'' }}"
+                                   required>
+                            <i class="fas fa-calendar absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"></i>
+                        </div>
+                        {% if form.start_date.errors %}
+                            <p class="text-red-500 text-sm mt-1">{{ form.start_date.errors.0 }}</p>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Data de Término -->
+                    <div>
+                        <label for="{{ form.end_date.id_for_label }}" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 flex items-center">
+                            <i class="fas fa-calendar text-gray-500 dark:text-gray-400 mr-2"></i>
+                            Data de Término
+                        </label>
+                        <div class="relative">
+                            <input type="date" 
+                                   name="{{ form.end_date.name }}" 
+                                   id="{{ form.end_date.id_for_label }}"
+                                   class="w-full px-4 py-2 pr-10 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors shadow-sm"
+                                   value="{{ form.end_date.value|default:'' }}"
+                                   required>
+                            <i class="fas fa-calendar absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"></i>
+                        </div>
+                        {% if form.end_date.errors %}
+                            <p class="text-red-500 text-sm mt-1">{{ form.end_date.errors.0 }}</p>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Tipo -->
+                    <div>
+                        <label for="{{ form.type.id_for_label }}" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 flex items-center">
+                            <i class="fas fa-graduation-cap text-gray-500 dark:text-gray-400 mr-2"></i>
+                            Tipo
+                        </label>
+                        <select name="{{ form.type.name }}" 
+                                id="{{ form.type.id_for_label }}"
+                                class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors shadow-sm"
+                                required>
+                            {% for choice in form.type.field.choices %}
+                                <option value="{{ choice.0 }}" {% if form.type.value == choice.0 or not form.type.value and choice.0 == 'COURSE' %}selected{% endif %}>{{ choice.1 }}</option>
+                            {% endfor %}
+                        </select>
+                        {% if form.type.errors %}
+                            <p class="text-red-500 text-sm mt-1">{{ form.type.errors.0 }}</p>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Local -->
+                    <div>
+                        <label for="{{ form.location.id_for_label }}" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 flex items-center">
+                            <i class="fas fa-map-marker-alt text-gray-500 dark:text-gray-400 mr-2"></i>
+                            Local
+                        </label>
+                        <input type="text" 
+                               name="{{ form.location.name }}" 
+                               id="{{ form.location.id_for_label }}"
+                               class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors shadow-sm"
+                               placeholder="Ex: Laboratório de Informática 1"
+                               value="{{ form.location.value|default:'' }}"
+                               required>
+                        {% if form.location.errors %}
+                            <p class="text-red-500 text-sm mt-1">{{ form.location.errors.0 }}</p>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Status -->
+                    <div>
+                        <label for="{{ form.status.id_for_label }}" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 flex items-center">
+                            <i class="fas fa-clock text-gray-500 dark:text-gray-400 mr-2"></i>
+                            Status
+                        </label>
+                        <select name="{{ form.status.name }}" 
+                                id="{{ form.status.id_for_label }}"
+                                class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors shadow-sm"
+                                required>
+                            {% for choice in form.status.field.choices %}
+                                <option value="{{ choice.0 }}" {% if form.status.value == choice.0 or not form.status.value and choice.0 == 'UPCOMING' %}selected{% endif %}>{{ choice.1 }}</option>
+                            {% endfor %}
+                        </select>
+                        {% if form.status.errors %}
+                            <p class="text-red-500 text-sm mt-1">{{ form.status.errors.0 }}</p>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Coordenador -->
+                    <div>
+                        <label for="{{ form.coordinator.id_for_label }}" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 flex items-center">
+                            <i class="fas fa-user text-gray-500 dark:text-gray-400 mr-2"></i>
+                            Coordenador
+                        </label>
+                        <input type="text" 
+                               name="{{ form.coordinator.name }}" 
+                               id="{{ form.coordinator.id_for_label }}"
+                               class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors shadow-sm"
+                               placeholder="Ex: Prof. João Silva"
+                               value="{{ form.coordinator.value|default:'' }}"
+                               required>
+                        {% if form.coordinator.errors %}
+                            <p class="text-red-500 text-sm mt-1">{{ form.coordinator.errors.0 }}</p>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Participantes -->
+                    <div>
+                        <label for="{{ form.participants.id_for_label }}" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 flex items-center">
+                            <i class="fas fa-users text-gray-500 dark:text-gray-400 mr-2"></i>
+                            Participantes
+                        </label>
+                        <input type="number" 
+                               name="{{ form.participants.name }}" 
+                               id="{{ form.participants.id_for_label }}"
+                               class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors shadow-sm"
+                               placeholder="0"
+                               min="0"
+                               value="{{ form.participants.value|default:0 }}">
+                        {% if form.participants.errors %}
+                            <p class="text-red-500 text-sm mt-1">{{ form.participants.errors.0 }}</p>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Descrição -->
+                    <div class="md:col-span-2">
+                        <label for="{{ form.description.id_for_label }}" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 flex items-center">
+                            <i class="fas fa-file-alt text-gray-500 dark:text-gray-400 mr-2"></i>
+                            Descrição
+                        </label>
+                        <textarea name="{{ form.description.name }}" 
+                                  id="{{ form.description.id_for_label }}"
+                                  rows="4"
+                                  class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors resize-y shadow-sm"
+                                  placeholder="Descreva os detalhes da atividade"
+                                  required>{{ form.description.value|default:'' }}</textarea>
+                        {% if form.description.errors %}
+                            <p class="text-red-500 text-sm mt-1">{{ form.description.errors.0 }}</p>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Tags -->
+                    <div class="md:col-span-2">
+                        <label for="tags-input" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 flex items-center">
+                            <i class="fas fa-tag text-gray-500 dark:text-gray-400 mr-2"></i>
+                            Tags
+                        </label>
+                        <div class="flex gap-2 flex-wrap mb-2" id="tags-container">
+                            <!-- Tags serão adicionadas aqui via JavaScript -->
+                        </div>
+                        <div class="flex gap-2">
+                            <input type="text" 
+                                   id="tags-input"
+                                   class="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors shadow-sm"
+                                   placeholder="Digite uma tag e pressione Enter">
+                            <button type="button" 
+                                    id="add-tag-btn"
+                                    class="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors flex items-center gap-2 shadow-sm hover:shadow-md">
+                                <i class="fas fa-plus"></i>
+                                Adicionar
+                            </button>
+                        </div>
+                        <input type="hidden" id="tags-hidden" name="tags" value="">
+                    </div>
+                </div>
+                
+                <!-- Botões de ação -->
+                <div class="mt-8 pt-6 border-t border-gray-200 dark:border-gray-700 flex justify-end gap-4">
+                    <a href="{% url 'activity_list' %}" 
+                       class="px-6 py-3 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors flex items-center gap-2 shadow-sm">
+                        <i class="fas fa-times"></i>
+                        Cancelar
+                    </a>
+                    <button type="submit" 
+                            class="px-6 py-3 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors flex items-center gap-2 shadow-lg hover:shadow-xl">
+                        <i class="fas fa-check"></i>
+                        Criar Atividade
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

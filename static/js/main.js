@@ -108,6 +108,38 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }, 5000);
 
+    // Função para atualizar posição do botão toggle
+    function updateToggleButtonPosition(isVisible) {
+        const toggleBtn = document.getElementById('sidebar-toggle');
+        const toggleIcon = document.getElementById('sidebar-toggle-icon');
+        if (!toggleBtn) return;
+        
+        // Usar classes CSS ao invés de style inline para garantir que funcione
+        requestAnimationFrame(() => {
+            if (isVisible) {
+                // Sidebar visível: adicionar classe para mover botão
+                toggleBtn.classList.remove('toggle-sidebar-closed');
+                toggleBtn.classList.add('toggle-sidebar-open');
+                // Mudar ícone para X quando aberto
+                if (toggleIcon) {
+                    toggleIcon.classList.remove('fa-bars');
+                    toggleIcon.classList.add('fa-times');
+                    toggleBtn.setAttribute('aria-label', 'Ocultar menu');
+                }
+            } else {
+                // Sidebar oculta: adicionar classe para voltar botão
+                toggleBtn.classList.remove('toggle-sidebar-open');
+                toggleBtn.classList.add('toggle-sidebar-closed');
+                // Mudar ícone para menu quando fechado
+                if (toggleIcon) {
+                    toggleIcon.classList.remove('fa-times');
+                    toggleIcon.classList.add('fa-bars');
+                    toggleBtn.setAttribute('aria-label', 'Mostrar menu');
+                }
+            }
+        });
+    }
+
     // Sidebar toggle com persistência
     const sidebar = document.getElementById('sidebar');
     const contentWrapper = document.getElementById('contentWrapper');
@@ -115,6 +147,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (sidebar && contentWrapper && toggleBtn) {
         const saved = localStorage.getItem('sidebarVisible');
         const isVisible = saved === null ? false : saved === 'true';
+        
         // Estado inicial
         if (isVisible) {
             sidebar.classList.remove('hidden');
@@ -124,6 +157,7 @@ document.addEventListener('DOMContentLoaded', function() {
             contentWrapper.classList.remove('without-sidebar');
             const footer = document.getElementById('app-footer');
             if (footer) { footer.classList.add('with-sidebar'); footer.classList.remove('without-sidebar'); }
+            updateToggleButtonPosition(true);
         } else {
             sidebar.classList.add('hidden');
             sidebar.classList.add('md:hidden');
@@ -132,11 +166,13 @@ document.addEventListener('DOMContentLoaded', function() {
             contentWrapper.classList.remove('with-sidebar');
             const footer = document.getElementById('app-footer');
             if (footer) { footer.classList.add('without-sidebar'); footer.classList.remove('with-sidebar'); }
+            updateToggleButtonPosition(false);
         }
 
         toggleBtn.addEventListener('click', () => {
             const visibleNow = !sidebar.classList.contains('sidebar-hidden');
             if (visibleNow) {
+                // Fechar sidebar
                 sidebar.classList.add('sidebar-hidden');
                 sidebar.classList.add('hidden');
                 sidebar.classList.add('md:hidden');
@@ -145,7 +181,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 const footer = document.getElementById('app-footer');
                 if (footer) { footer.classList.add('without-sidebar'); footer.classList.remove('with-sidebar'); }
                 localStorage.setItem('sidebarVisible', 'false');
+                // Atualizar posição do botão com pequeno delay para sincronizar com animação
+                setTimeout(() => updateToggleButtonPosition(false), 10);
             } else {
+                // Abrir sidebar
                 sidebar.classList.remove('hidden');
                 sidebar.classList.remove('md:hidden');
                 sidebar.classList.remove('sidebar-hidden');
@@ -154,6 +193,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 const footer = document.getElementById('app-footer');
                 if (footer) { footer.classList.add('with-sidebar'); footer.classList.remove('without-sidebar'); }
                 localStorage.setItem('sidebarVisible', 'true');
+                // Atualizar posição do botão com pequeno delay para sincronizar com animação
+                setTimeout(() => updateToggleButtonPosition(true), 10);
             }
         });
     }
@@ -175,6 +216,187 @@ document.addEventListener('DOMContentLoaded', function() {
         };
         onScroll();
         window.addEventListener('scroll', onScroll);
+    }
+
+    // Indicador móvel da navegação (inspirado no exemplo React)
+    function updateNavIndicator() {
+        const indicator = document.getElementById('nav-indicator');
+        const navLinks = document.querySelectorAll('.nav-menu-link');
+        const currentPath = window.location.pathname;
+        
+        if (!indicator || navLinks.length === 0) return;
+        
+        // Remover classe active de todos os links
+        navLinks.forEach(link => {
+            link.classList.remove('active');
+        });
+        
+        // Encontrar o link ativo
+        let activeLink = null;
+        let bestMatch = null;
+        let bestMatchLength = 0;
+        
+        navLinks.forEach(link => {
+            try {
+                const linkUrl = new URL(link.href, window.location.origin);
+                const linkPath = linkUrl.pathname;
+                
+                // Match exato tem prioridade máxima
+                if (currentPath === linkPath) {
+                    activeLink = link;
+                    bestMatch = link;
+                    bestMatchLength = linkPath.length;
+                } 
+                // Se não houver match exato, procurar o mais específico (mais longo)
+                else if (linkPath !== '/' && currentPath.startsWith(linkPath)) {
+                    if (linkPath.length > bestMatchLength) {
+                        bestMatch = link;
+                        bestMatchLength = linkPath.length;
+                    }
+                }
+            } catch (e) {
+                // Ignorar erros de URL inválida
+                console.debug('Erro ao processar URL do link:', e);
+            }
+        });
+        
+        // Usar o melhor match encontrado
+        if (!activeLink && bestMatch) {
+            activeLink = bestMatch;
+        }
+        
+        if (activeLink) {
+            // Adicionar classe active ao link para estilização
+            activeLink.classList.add('active');
+            
+            // Calcular posição do indicador de forma precisa
+            const linkRect = activeLink.getBoundingClientRect();
+            const navList = activeLink.closest('ul');
+            if (!navList) return;
+            
+            const navListRect = navList.getBoundingClientRect();
+            
+            // Calcular posição relativa dentro do ul (sem considerar scroll, pois é absolute)
+            const top = linkRect.top - navListRect.top;
+            const height = linkRect.height;
+            
+            // Usar requestAnimationFrame para transição mais suave (similar ao React)
+            requestAnimationFrame(() => {
+                indicator.style.top = `${top}px`;
+                indicator.style.height = `${height}px`;
+                
+                // Mostrar indicador com fade-in suave
+                if (indicator.classList.contains('opacity-0')) {
+                    indicator.classList.remove('opacity-0');
+                    // Pequeno delay para forçar reflow e garantir transição suave
+                    requestAnimationFrame(() => {
+                        indicator.style.opacity = '1';
+                    });
+                } else {
+                    indicator.style.opacity = '1';
+                }
+            });
+        } else {
+            // Esconder indicador se não houver link ativo
+            requestAnimationFrame(() => {
+                indicator.style.opacity = '0';
+                setTimeout(() => {
+                    indicator.classList.add('opacity-0');
+                }, 200); // Aguardar a transição de opacity
+            });
+        }
+    }
+    
+    // Função debounced para atualizar indicador (evita múltiplas chamadas)
+    let updateTimeout = null;
+    function updateNavIndicatorDelayed() {
+        if (updateTimeout) {
+            clearTimeout(updateTimeout);
+        }
+        updateTimeout = setTimeout(() => {
+            updateNavIndicator();
+            updateTimeout = null;
+        }, 50);
+    }
+    
+    // Atualizar indicador imediatamente ao carregar
+    updateNavIndicator();
+    
+    // Atualizar ao redimensionar a janela
+    let resizeTimeout = null;
+    window.addEventListener('resize', () => {
+        if (resizeTimeout) {
+            clearTimeout(resizeTimeout);
+        }
+        resizeTimeout = setTimeout(() => {
+            updateNavIndicator();
+            // Atualizar posição do botão toggle também
+            const sidebar = document.getElementById('sidebar');
+            if (sidebar) {
+                const isVisible = !sidebar.classList.contains('sidebar-hidden') && 
+                                 !sidebar.classList.contains('hidden');
+                updateToggleButtonPosition(isVisible);
+            }
+        }, 100);
+    });
+    
+    // Atualizar quando a sidebar aparecer/desaparecer
+    const sidebarForIndicator = document.getElementById('sidebar');
+    if (sidebarForIndicator) {
+        const sidebarObserver = new MutationObserver(() => {
+            // Verificar estado da sidebar para atualizar indicador
+            const isVisible = !sidebarForIndicator.classList.contains('hidden') && 
+                             !sidebarForIndicator.classList.contains('sidebar-hidden');
+            
+            // Atualizar indicador se sidebar estiver visível
+            if (isVisible) {
+                updateNavIndicatorDelayed();
+            }
+            
+            // Atualizar posição do botão toggle
+            updateToggleButtonPosition(isVisible);
+        });
+        
+        sidebarObserver.observe(sidebarForIndicator, {
+            attributes: true,
+            attributeFilter: ['class'],
+            childList: false,
+            subtree: false
+        });
+    }
+    
+    // Atualizar quando navegar usando botões do browser (back/forward)
+    window.addEventListener('popstate', updateNavIndicatorDelayed);
+    
+    // Atualizar quando clicar em qualquer link do menu
+    document.querySelectorAll('.nav-menu-link').forEach(link => {
+        link.addEventListener('click', () => {
+            // Usar um delay maior para garantir que a navegação ocorreu
+            setTimeout(updateNavIndicator, 150);
+        });
+    });
+    
+    // Atualizar após o carregamento completo da página
+    if (document.readyState === 'complete') {
+        updateNavIndicator();
+    } else {
+        window.addEventListener('load', () => {
+            setTimeout(updateNavIndicator, 100);
+        });
+    }
+    
+    // Observar mudanças no DOM que possam afetar a posição dos links
+    const navContainer = document.querySelector('nav.flex-1');
+    if (navContainer) {
+        const domObserver = new MutationObserver(() => {
+            updateNavIndicatorDelayed();
+        });
+        
+        domObserver.observe(navContainer, {
+            childList: true,
+            subtree: true,
+            attributes: false
+        });
     }
 });
 

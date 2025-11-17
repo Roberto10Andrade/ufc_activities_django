@@ -128,3 +128,34 @@
 #sidebar { transition: transform 0.3s ease; }
 .sidebar-hidden { transform: translateX(-100%); }
 
+/* Estilo para links ativos na navegação */
+.nav-menu-link.active {
+    @apply bg-primary-700/50;
+}
+
+/* Indicador móvel da navegação (inspirado no exemplo React) */
+#nav-indicator {
+    z-index: 10;
+    box-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
+    transition: top 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                height 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                opacity 0.2s ease-in-out;
+    will-change: top, height, opacity;
+}
+
+/* Botão toggle da sidebar - movimentação suave junto com a sidebar */
+#sidebar-toggle {
+    transition: left 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    will-change: left;
+}
+
+/* Quando a sidebar está fechada: botão à esquerda */
+#sidebar-toggle.toggle-sidebar-closed {
+    left: 16px !important;
+}
+
+/* Quando a sidebar está aberta: botão se move para a direita (256px sidebar + 16px offset) */
+#sidebar-toggle.toggle-sidebar-open {
+    left: 272px !important;
+}
+

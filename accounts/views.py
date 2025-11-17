@@ -11,7 +11,7 @@ def register_view(request):
             user = form.save()
             login(request, user)
             messages.success(request, 'Conta criada com sucesso!')
-            return redirect('dashboard')
+            return redirect('activity_list')
     else:
         form = UserCreationForm()
     
