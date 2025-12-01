@@ -151,28 +151,7 @@
                 </div>
             </nav>
 
-            <!-- Usuário -->
-            {% if user.is_authenticated %}
-            <div class="user-section mt-auto pt-6 pb-6 border-t border-white/20">
-                <div class="bg-white/10 rounded-xl p-4 mb-3">
-                    <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center font-bold text-lg">
-                            {{ user.username|first|upper }}
-                        </div>
-                        <div class="flex-1">
-                            <p class="font-semibold text-sm">{{ user.username }}</p>
-                            <p class="text-xs opacity-80">{{ user.email|default:"Usuário" }}</p>
-                        </div>
-                    </div>
-                </div>
-                <a href="{% url 'logout' %}" class="nav-link flex items-center gap-3 p-2 rounded-lg hover:bg-white/10 transition-all duration-200">
-                    <svg class="nav-icon w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                    </svg>
-                    <span class="text-sm font-medium">Sair</span>
-                </a>
-            </div>
-            {% endif %}
+
         </div>
     </aside>
 

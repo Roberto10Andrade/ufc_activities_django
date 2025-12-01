@@ -1,9 +1,27 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.urls import reverse
+from django.core.validators import MinValueValidator, MinLengthValidator
+from django.utils.translation import gettext_lazy as _
 
 
 class Activity(models.Model):
+    class ActivityType(models.TextChoices):
+        COURSE = 'COURSE', _('Curso')
+        WORKSHOP = 'WORKSHOP', _('Workshop')
+        SEMINAR = 'SEMINAR', _('Seminário')
+        RESEARCH = 'RESEARCH', _('Pesquisa')
+        EXTENSION = 'EXTENSION', _('Extensão')
+        OTHER = 'OTHER', _('Outro')
+
+    class ActivityStatus(models.TextChoices):
+        PENDING = 'PENDING', _('Pendente')
+        IN_PROGRESS = 'IN_PROGRESS', _('Em Andamento')
+        COMPLETED = 'COMPLETED', _('Concluída')
+        CANCELLED = 'CANCELLED', _('Cancelada')
+        ACTIVE = 'ACTIVE', _('Ativa')
+        UPCOMING = 'UPCOMING', _('Em Breve')
+
     ACTIVITY_TYPES = [
         ('COURSE', 'Curso'),
         ('WORKSHOP', 'Workshop'),
@@ -14,34 +32,90 @@ class Activity(models.Model):
     ]
     
     STATUS_CHOICES = [
-        ('ACTIVE', 'Ativo'),
-        ('UPCOMING', 'Próximo'),
-        ('COMPLETED', 'Concluído'),
-        ('CANCELLED', 'Cancelado'),
+        ('PENDING', 'Pendente'),
+        ('IN_PROGRESS', 'Em Andamento'),
+        ('COMPLETED', 'Concluída'),
+        ('CANCELLED', 'Cancelada'),
+        ('ACTIVE', 'Ativa'),
+        ('UPCOMING', 'Em Breve'),
     ]
     
-    title = models.CharField('Título', max_length=200)
-    description = models.TextField('Descrição')
-    type = models.CharField('Tipo', max_length=20, choices=ACTIVITY_TYPES, default='OTHER')
-    status = models.CharField('Status', max_length=20, choices=STATUS_CHOICES, default='UPCOMING')
-    start_date = models.DateField('Data de Início')
-    end_date = models.DateField('Data de Fim')
-    time = models.CharField('Horário', max_length=50, blank=True)
-    location = models.CharField('Local', max_length=200)
-    coordinator = models.CharField('Coordenador', max_length=100)
-    participants = models.IntegerField('Participantes', default=0)
+    title = models.CharField(
+        max_length=200,
+        validators=[MinLengthValidator(3)],
+        verbose_name=_('Título'),
+        help_text=_('Título da atividade (mínimo 3 caracteres)')
+    )
+    description = models.TextField(
+        validators=[MinLengthValidator(10)],
+        verbose_name=_('Descrição'),
+        help_text=_('Descrição detalhada da atividade (mínimo 10 caracteres)')
+    )
+    type = models.CharField(
+        max_length=20,
+        choices=ActivityType.choices,
+        default=ActivityType.COURSE,
+        verbose_name=_('Tipo')
+    )
+    status = models.CharField(
+        max_length=20,
+        choices=ActivityStatus.choices,
+        default=ActivityStatus.PENDING,
+        verbose_name=_('Status')
+    )
+    start_date = models.DateField(verbose_name=_('Data de Início'))
+    end_date = models.DateField(verbose_name=_('Data de Término'))
+    time = models.TimeField(
+        null=True,
+        blank=True,
+        verbose_name=_('Horário')
+    )
+    location = models.CharField(
+        max_length=200,
+        verbose_name=_('Local'),
+        help_text=_('Ex: Laboratório de Informática 1')
+    )
+    coordinator = models.CharField(
+        max_length=200,
+        verbose_name=_('Coordenador'),
+        help_text=_('Ex: Prof. João Silva')
+    )
+    participants = models.PositiveIntegerField(
+        validators=[MinValueValidator(1)],
+        verbose_name=_('Número de Participantes'),
+        help_text=_('Mínimo 1 participante'),
+        default=1
+    )
     image = models.ImageField('Imagem', upload_to='activities/', blank=True, null=True)
-    created_at = models.DateTimeField('Criado em', auto_now_add=True)
-    updated_at = models.DateTimeField('Atualizado em', auto_now=True)
+    image_url = models.URLField(
+        null=True,
+        blank=True,
+        verbose_name=_('URL da Imagem')
+    )
+    created_at = models.DateTimeField(
+        auto_now_add=True,
+        verbose_name=_('Criado em')
+    )
+    updated_at = models.DateTimeField(
+        auto_now=True,
+        verbose_name=_('Atualizado em')
+    )
     
     class Meta:
-        verbose_name = 'Atividade'
-        verbose_name_plural = 'Atividades'
-        ordering = ['-created_at']
-    
+        verbose_name = _('Atividade')
+        verbose_name_plural = _('Atividades')
+        ordering = ['-start_date']
+
     def __str__(self):
         return self.title
-    
+
+    def clean(self):
+        from django.core.exceptions import ValidationError
+        if self.end_date and self.start_date and self.end_date < self.start_date:
+            raise ValidationError({
+                'end_date': 'A data de término deve ser posterior à data de início.'
+            })
+
     def get_absolute_url(self):
         return reverse('activity_detail', kwargs={'pk': self.pk})
     

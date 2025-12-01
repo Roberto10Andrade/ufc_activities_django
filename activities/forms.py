@@ -1,75 +1,112 @@
 from django import forms
-from .models import Activity, ActivityTag, ActivityRequirement
+from .models import Activity, ActivityTag
 
 
 class ActivityForm(forms.ModelForm):
-    tags = forms.ModelMultipleChoiceField(
-        queryset=ActivityTag.objects.all(),
-        widget=forms.CheckboxSelectMultiple,
-        required=False,
-        label='Tags'
+    tags = forms.CharField(
+        required=True,
+        widget=forms.Textarea(attrs={
+            'class': 'w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500',
+            'rows': 2,
+            'placeholder': 'Digite as tags separadas por vírgula'
+        }),
+        label='Tags',
+        help_text='Digite as tags separadas por vírgula (mínimo 1 tag obrigatória)'
     )
-    
-    requirements = forms.CharField(
-        widget=forms.Textarea(attrs={'rows': 3, 'placeholder': 'Digite cada requisito em uma linha separada'}),
-        required=False,
-        label='Requisitos',
-        help_text='Digite cada requisito em uma linha separada'
-    )
-    
+
     class Meta:
         model = Activity
         fields = [
-            'title', 'description', 'type', 'status', 
-            'start_date', 'end_date', 'time', 'location', 
-            'coordinator', 'participants', 'image'
+            'title', 'description', 'status',
+            'start_date', 'end_date', 'location',
+            'coordinator', 'participants'
         ]
         widgets = {
-            'title': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Título da atividade'}),
-            'description': forms.Textarea(attrs={'class': 'form-control', 'rows': 4, 'placeholder': 'Descrição detalhada da atividade'}),
-            'type': forms.Select(attrs={'class': 'form-control'}),
-            'status': forms.Select(attrs={'class': 'form-control'}),
-            'start_date': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
-            'end_date': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
-            'time': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ex: 14:00 - 18:00'}),
-            'location': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Local da atividade'}),
-            'coordinator': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Nome do coordenador'}),
-            'participants': forms.NumberInput(attrs={'class': 'form-control', 'min': '0'}),
-            'image': forms.FileInput(attrs={'class': 'form-control', 'accept': 'image/*'}),
+            'title': forms.TextInput(attrs={
+                'class': 'w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500',
+                'placeholder': 'Digite o título da atividade'
+            }),
+            'description': forms.Textarea(attrs={
+                'class': 'w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500',
+                'rows': 4,
+                'placeholder': 'Descreva os detalhes da atividade'
+            }),
+            'start_date': forms.DateInput(attrs={
+                'class': 'w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500',
+                'type': 'date'
+            }),
+            'end_date': forms.DateInput(attrs={
+                'class': 'w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500',
+                'type': 'date'
+            }),
+            'location': forms.TextInput(attrs={
+                'class': 'w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500',
+                'placeholder': 'Ex: Laboratório de Informática 1'
+            }),
+            'coordinator': forms.TextInput(attrs={
+                'class': 'w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500',
+                'placeholder': 'Ex: Prof. João Silva'
+            }),
+            'participants': forms.NumberInput(attrs={
+                'class': 'w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500',
+                'min': 1
+            }),
+            'status': forms.Select(attrs={
+                'class': 'w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500'
+            }),
         }
-    
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        if self.instance.pk:
-            # Preencher tags existentes
-            self.fields['tags'].initial = self.instance.tags.all()
-            # Preencher requisitos existentes
-            requirements = self.instance.requirements.all().values_list('requirement', flat=True)
-            self.fields['requirements'].initial = '\n'.join(requirements)
-    
-    def save(self, commit=True):
-        instance = super().save(commit=commit)
+        if self.instance and self.instance.pk:
+            tags_str = ', '.join([tag.name for tag in self.instance.tags.all()])
+            self.fields['tags'].initial = tags_str
+
+    def clean_title(self):
+        title = self.cleaned_data.get('title')
+        if len(title.strip()) < 3:
+            raise forms.ValidationError('Título deve ter pelo menos 3 caracteres')
+        return title
+
+    def clean_description(self):
+        description = self.cleaned_data.get('description')
+        if len(description.strip()) < 10:
+            raise forms.ValidationError('Descrição deve ter pelo menos 10 caracteres')
+        return description
+
+    def clean_tags(self):
+        tags = self.cleaned_data.get('tags', '')
+        tag_list = [tag.strip() for tag in tags.split(',') if tag.strip()]
+        if len(tag_list) == 0:
+            raise forms.ValidationError('Adicione pelo menos uma tag')
+        return tags
+
+    def clean(self):
+        cleaned_data = super().clean()
+        start_date = cleaned_data.get('start_date')
+        end_date = cleaned_data.get('end_date')
         
+        if start_date and end_date and end_date < start_date:
+            raise forms.ValidationError({
+                'end_date': 'A data de término deve ser posterior à data de início.'
+            })
+        
+        return cleaned_data
+
+    def save(self, commit=True):
+        instance = super().save(commit=False)
         if commit:
-            # Salvar tags
-            tags = self.cleaned_data.get('tags')
-            if tags:
+            instance.save()
+            tags_str = self.cleaned_data.get('tags', '')
+            if tags_str:
+                tag_names = [tag.strip() for tag in tags_str.split(',') if tag.strip()]
+                tags = []
+                for tag_name in tag_names:
+                    tag, created = ActivityTag.objects.get_or_create(name=tag_name)
+                    tags.append(tag)
                 instance.tags.set(tags)
             else:
                 instance.tags.clear()
-            
-            # Salvar requisitos
-            requirements_text = self.cleaned_data.get('requirements', '')
-            if requirements_text:
-                # Remover requisitos existentes
-                instance.requirements.all().delete()
-                # Adicionar novos requisitos
-                requirements_list = [req.strip() for req in requirements_text.split('\n') if req.strip()]
-                for req in requirements_list:
-                    ActivityRequirement.objects.create(activity=instance, requirement=req)
-            else:
-                instance.requirements.all().delete()
-        
         return instance
 
 
@@ -93,4 +130,3 @@ class ActivitySearchForm(forms.Form):
         required=False,
         widget=forms.Select(attrs={'class': 'form-control'})
     )
-

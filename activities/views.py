@@ -1,6 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.contrib import messages
+
 from django.urls import reverse_lazy
 from django.db.models import Q, Count
 from django.core.paginator import Paginator
@@ -17,7 +18,6 @@ class ActivityListView(ListView):
     def get_queryset(self):
         queryset = Activity.objects.all()
         
-        # Busca
         search = self.request.GET.get('search')
         if search:
             queryset = queryset.filter(
@@ -27,7 +27,6 @@ class ActivityListView(ListView):
                 Q(location__icontains=search)
             )
         
-        # Filtros
         activity_type = self.request.GET.get('type')
         if activity_type:
             queryset = queryset.filter(type=activity_type)
@@ -55,22 +54,31 @@ class ActivityDetailView(DetailView):
 class ActivityCreateView(CreateView):
     model = Activity
     form_class = ActivityForm
-    template_name = 'activities/create.html'
+    template_name = 'activities/activity_form.html'
     success_url = reverse_lazy('activity_list')
-    
+
     def form_valid(self, form):
         messages.success(self.request, 'Atividade criada com sucesso!')
         return super().form_valid(form)
+
+    def form_invalid(self, form):
+        messages.error(self.request, 'Erro ao criar atividade. Verifique os dados.')
+        return super().form_invalid(form)
 
 
 class ActivityUpdateView(UpdateView):
     model = Activity
     form_class = ActivityForm
-    template_name = 'activities/update.html'
-    
+    template_name = 'activities/activity_form.html'
+    success_url = reverse_lazy('activity_list')
+
     def form_valid(self, form):
         messages.success(self.request, 'Atividade atualizada com sucesso!')
         return super().form_valid(form)
+
+    def form_invalid(self, form):
+        messages.error(self.request, 'Erro ao atualizar atividade. Verifique os dados.')
+        return super().form_invalid(form)
 
 
 class ActivityDeleteView(DeleteView):
@@ -94,4 +102,3 @@ def dashboard_view(request):
         'activities_by_type': Activity.objects.values('type').annotate(count=Count('type')),
     }
     return render(request, 'dashboard/index.html', context)
-
