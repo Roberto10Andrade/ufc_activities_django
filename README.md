@@ -298,4 +298,3 @@ python manage.py runserver 0.0.0.0:8000
 - **Focus indicators**: Indicadores visuais claros
 
 
->>>>>>> db9226f46dcd46a0c1ccb115f42eeefd6a2bb2a5
