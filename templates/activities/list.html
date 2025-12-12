@@ -30,6 +30,96 @@ function getActivityTypeGradient(type) {
     return gradients[type] || 'from-gray-500 to-slate-600';
 }
 
+// Auto-submit do formulário de busca via AJAX
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('search');
+    const typeSelect = document.getElementById('type');
+    const statusSelect = document.getElementById('status');
+    const startDate = document.getElementById('start_date');
+    const endDate = document.getElementById('end_date');
+    const container = document.getElementById('activitiesContainer');
+    const resultsWrapper = document.getElementById('resultsWrapper');
+    const noResultsWrapper = document.getElementById('noResultsWrapper');
+    
+    function getStatusClass(status) {
+        const classes = {
+            'ACTIVE': 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200',
+            'UPCOMING': 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200',
+            'COMPLETED': 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200',
+            'CANCELLED': 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
+        };
+        return classes[status] || 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200';
+    }
+    
+    function renderActivities(activities) {
+        if (!container) return;
+        
+        if (activities.length === 0) {
+            if (resultsWrapper) resultsWrapper.style.display = 'none';
+            if (noResultsWrapper) noResultsWrapper.style.display = 'block';
+            return;
+        }
+        
+        if (resultsWrapper) resultsWrapper.style.display = 'block';
+        if (noResultsWrapper) noResultsWrapper.style.display = 'none';
+        
+        container.innerHTML = activities.map(activity => `
+            <a href="/atividades/${activity.id}/" 
+               class="group bg-white dark:bg-gray-800 shadow-md hover:shadow-lg rounded-lg overflow-hidden transition-all duration-300 border border-gray-100 dark:border-gray-700 flex flex-col h-full hover:border-blue-300 dark:hover:border-blue-700 hover:-translate-y-1">
+                <div class="h-3 w-full bg-gradient-to-r ${activity.gradient_class}"></div>
+                <div class="p-5 flex-1 flex flex-col">
+                    <div class="flex justify-between items-start mb-3">
+                        <div class="flex items-center gap-2">
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusClass(activity.status)}">
+                                ${activity.status_display}
+                            </span>
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200">
+                                ${activity.type_display}
+                            </span>
+                        </div>
+                        <div class="text-2xl">${activity.icon}</div>
+                    </div>
+                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                        ${activity.title}
+                    </h3>
+                    <div class="mt-auto space-y-2 text-sm text-gray-500 dark:text-gray-400">
+                        <div class="flex items-center">
+                            <i class="fas fa-calendar w-4 h-4 mr-2"></i>
+                            ${activity.start_date}
+                        </div>
+                        ${activity.coordinator ? `
+                        <div class="flex items-center">
+                            <i class="fas fa-user w-4 h-4 mr-2"></i>
+                            ${activity.coordinator}
+                        </div>
+                        ` : ''}
+                    </div>
+                </div>
+            </a>
+        `).join('');
+    }
+    
+    function doSearch() {
+        const params = new URLSearchParams();
+        if (searchInput && searchInput.value) params.set('search', searchInput.value);
+        if (typeSelect && typeSelect.value) params.set('type', typeSelect.value);
+        if (statusSelect && statusSelect.value) params.set('status', statusSelect.value);
+        if (startDate && startDate.value) params.set('start_date', startDate.value);
+        if (endDate && endDate.value) params.set('end_date', endDate.value);
+        
+        fetch('/atividades/api/search/?' + params.toString())
+            .then(response => response.json())
+            .then(data => renderActivities(data.activities))
+            .catch(err => console.error('Erro na busca:', err));
+    }
+    
+    if (searchInput) searchInput.addEventListener('input', doSearch);
+    if (typeSelect) typeSelect.addEventListener('change', doSearch);
+    if (statusSelect) statusSelect.addEventListener('change', doSearch);
+    if (startDate) startDate.addEventListener('change', doSearch);
+    if (endDate) endDate.addEventListener('change', doSearch);
+});
+
 // Alternar visualização
 document.addEventListener('DOMContentLoaded', function() {
     const gridViewBtn = document.getElementById('gridViewBtn');
@@ -168,23 +258,11 @@ document.addEventListener('DOMContentLoaded', function() {
                         </div>
                     </div>
                     
-                    <!-- Botões -->
-                    <div class="flex gap-2">
-                        <button type="submit" class="px-4 py-2.5 text-sm bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors flex items-center gap-2 whitespace-nowrap">
-                            <i class="fas fa-search text-xs"></i>
-                            Filtrar
-                        </button>
-                        <a href="{% url 'activity_list' %}" class="px-4 py-2.5 text-sm bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors flex items-center gap-2 whitespace-nowrap">
-                            <i class="fas fa-times text-xs"></i>
-                            Limpar
-                        </a>
-                    </div>
                 </form>
             </div>
             
             <!-- Resultados -->
-            {% if activities %}
-                <div class="px-8 pb-8">
+            <div id="resultsWrapper" class="px-8 pb-8" {% if not activities %}style="display: none;"{% endif %}>
                     <div id="activitiesContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 animate-fadeIn">
                         {% for activity in activities %}
                             <a href="{% url 'activity_detail' activity.pk %}" 
@@ -291,34 +369,33 @@ document.addEventListener('DOMContentLoaded', function() {
                             </nav>
                         </div>
                     {% endif %}
-                </div>
-            {% else %}
-                <!-- Estado vazio -->
-                <div class="flex flex-col items-center justify-center py-16 px-8 animate-fadeIn">
-                    <div class="relative mb-6">
-                        <!-- Ícone de lupa estilizado -->
-                        <div class="w-24 h-24 flex items-center justify-center">
-                            <div class="relative">
-                                <!-- Lente -->
-                                <div class="w-16 h-16 rounded-full border-4 border-blue-400 bg-blue-100/30"></div>
-                                <!-- Cabo -->
-                                <div class="absolute -bottom-2 -right-2 w-12 h-3 bg-purple-400 transform rotate-45 rounded"></div>
-                            </div>
+            </div>
+            
+            <!-- Estado vazio -->
+            <div id="noResultsWrapper" class="flex flex-col items-center justify-center py-16 px-8 animate-fadeIn" {% if activities %}style="display: none;"{% endif %}>
+                <div class="relative mb-6">
+                    <!-- Ícone de lupa estilizado -->
+                    <div class="w-24 h-24 flex items-center justify-center">
+                        <div class="relative">
+                            <!-- Lente -->
+                            <div class="w-16 h-16 rounded-full border-4 border-blue-400 bg-blue-100/30"></div>
+                            <!-- Cabo -->
+                            <div class="absolute -bottom-2 -right-2 w-12 h-3 bg-purple-400 transform rotate-45 rounded"></div>
                         </div>
                     </div>
-                    <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-2 text-center">
-                        Nenhuma atividade encontrada
-                    </h3>
-                    <p class="text-gray-600 dark:text-gray-400 text-center mb-6 max-w-md">
-                        Não encontramos nenhuma atividade com os filtros selecionados. Tente ajustar os filtros ou criar uma nova atividade.
-                    </p>
-                    <a href="{% url 'activity_create' %}" 
-                       class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium flex items-center gap-2 shadow-lg hover:shadow-xl">
-                        <i class="fas fa-plus"></i>
-                        Criar Nova Atividade
-                    </a>
                 </div>
-            {% endif %}
+                <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-2 text-center">
+                    Nenhuma atividade encontrada
+                </h3>
+                <p class="text-gray-600 dark:text-gray-400 text-center mb-6 max-w-md">
+                    Não encontramos nenhuma atividade com os filtros selecionados. Tente ajustar os filtros ou criar uma nova atividade.
+                </p>
+                <a href="{% url 'activity_create' %}" 
+                   class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium flex items-center gap-2 shadow-lg hover:shadow-xl">
+                    <i class="fas fa-plus"></i>
+                    Criar Nova Atividade
+                </a>
+            </div>
         </div>
     </div>
 </div>

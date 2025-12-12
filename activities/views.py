@@ -1,6 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.contrib import messages
+from django.http import JsonResponse
 
 from django.urls import reverse_lazy
 from django.db.models import Q, Count
@@ -102,3 +103,44 @@ def dashboard_view(request):
         'activities_by_type': Activity.objects.values('type').annotate(count=Count('type')),
     }
     return render(request, 'dashboard/index.html', context)
+
+
+def activity_search_api(request):
+    """API para busca de atividades via AJAX"""
+    queryset = Activity.objects.all()
+    
+    search = request.GET.get('search', '')
+    if search:
+        queryset = queryset.filter(
+            Q(title__icontains=search) |
+            Q(description__icontains=search) |
+            Q(coordinator__icontains=search) |
+            Q(location__icontains=search)
+        )
+    
+    activity_type = request.GET.get('type')
+    if activity_type:
+        queryset = queryset.filter(type=activity_type)
+        
+    status = request.GET.get('status')
+    if status:
+        queryset = queryset.filter(status=status)
+    
+    queryset = queryset.order_by('-created_at')[:50]
+    
+    activities = []
+    for activity in queryset:
+        activities.append({
+            'id': activity.pk,
+            'title': activity.title,
+            'type': activity.type,
+            'type_display': activity.get_type_display(),
+            'status': activity.status,
+            'status_display': activity.get_status_display(),
+            'start_date': activity.start_date.strftime('%d/%m/%Y') if activity.start_date else '',
+            'coordinator': activity.coordinator or '',
+            'icon': activity.get_icon(),
+            'gradient_class': activity.get_gradient_class(),
+        })
+    
+    return JsonResponse({'activities': activities})
