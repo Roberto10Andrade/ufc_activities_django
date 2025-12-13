@@ -105,8 +105,8 @@ def dashboard_view(request):
     return render(request, 'dashboard/index.html', context)
 
 
-def activity_search_api(request):
-    """API para busca de atividades via AJAX"""
+def activity_search_htmx(request):
+    """View para busca de atividades via HTMX"""
     queryset = Activity.objects.all()
     
     search = request.GET.get('search', '')
@@ -128,19 +128,6 @@ def activity_search_api(request):
     
     queryset = queryset.order_by('-created_at')[:50]
     
-    activities = []
-    for activity in queryset:
-        activities.append({
-            'id': activity.pk,
-            'title': activity.title,
-            'type': activity.type,
-            'type_display': activity.get_type_display(),
-            'status': activity.status,
-            'status_display': activity.get_status_display(),
-            'start_date': activity.start_date.strftime('%d/%m/%Y') if activity.start_date else '',
-            'coordinator': activity.coordinator or '',
-            'icon': activity.get_icon(),
-            'gradient_class': activity.get_gradient_class(),
-        })
-    
-    return JsonResponse({'activities': activities})
+    return render(request, 'activities/partials/activity_results.html', {
+        'activities': queryset
+    })

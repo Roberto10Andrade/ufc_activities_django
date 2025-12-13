@@ -19,8 +19,6 @@ class Activity(models.Model):
         IN_PROGRESS = 'IN_PROGRESS', _('Em Andamento')
         COMPLETED = 'COMPLETED', _('Concluída')
         CANCELLED = 'CANCELLED', _('Cancelada')
-        ACTIVE = 'ACTIVE', _('Ativa')
-        UPCOMING = 'UPCOMING', _('Em Breve')
 
     ACTIVITY_TYPES = [
         ('COURSE', 'Curso'),
@@ -36,8 +34,6 @@ class Activity(models.Model):
         ('IN_PROGRESS', 'Em Andamento'),
         ('COMPLETED', 'Concluída'),
         ('CANCELLED', 'Cancelada'),
-        ('ACTIVE', 'Ativa'),
-        ('UPCOMING', 'Em Breve'),
     ]
     
     title = models.CharField(
