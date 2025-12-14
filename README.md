@@ -68,12 +68,20 @@ Sistema web desenvolvido em Django para gerenciamento de atividades acadêmicas 
    source venv/bin/activate
    ```
 
-3. **Instale as dependências**
+3. **Instale as dependências Python**
    ```bash
    pip install -r requirements.txt
    ```
 
-4. **Configure o banco de dados**
+4. **Compile o Tailwind CSS**
+   ```bash
+   cd theme/static_src
+   npm install
+   npm run build
+   cd ../..
+   ```
+
+5. **Configure o banco de dados**
    ```bash
    python manage.py makemigrations
    python manage.py migrate
