@@ -1,29 +1,21 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}Atividades - UFC Sobral{% endblock %}
+{% block title %}Pesquisar Atividades - UFC Sobral{% endblock %}
 
 {% block content %}
 <div class="py-8">
     <div class="max-w-7xl mx-auto px-4">
-        <!-- Card Principal -->
         <div class="card">
-            <!-- Header do Card -->
             <div class="flex items-center justify-between mb-6 pb-6 border-b border-gray-200">
                 <div>
-                    <h1 class="text-3xl font-bold text-gray-900 mb-2">Atividades</h1>
-                    <p class="text-gray-600">Gerencie todas as atividades da UFC Sobral</p>
+                    <h1 class="text-3xl font-bold text-gray-900 mb-2">Pesquisar Atividades</h1>
+                    <p class="text-gray-600">Encontre atividades da UFC Sobral</p>
                 </div>
-                <a href="{% url 'activity_create' %}" class="btn btn-primary">
-                    <i class="fas fa-plus"></i>
-                    Nova Atividade
-                </a>
             </div>
             
-            <!-- Filtros e Busca -->
             <form method="GET" class="space-y-4 mb-8">
                 <div class="md:flex md:items-end md:gap-4">
-                    <!-- Busca -->
                     <div class="flex-1 mb-4">
                         <label for="search" class="form-label">Buscar</label>
                         <div class="relative">
@@ -31,12 +23,12 @@
                                    name="search" 
                                    id="search"
                                    value="{{ request.GET.search }}"
-                                   placeholder="Buscar atividades..."
-                                   class="form-control">
+                                   placeholder="Digite sua busca..."
+                                   class="form-control"
+                                   autofocus>
                         </div>
                     </div>
                     
-                    <!-- Filtro por Tipo -->
                     <div class="mb-4" style="width: 12rem;">
                         <label for="type" class="form-label">Tipo</label>
                         <select name="type" id="type" class="form-control">
@@ -49,7 +41,6 @@
                         </select>
                     </div>
                     
-                    <!-- Filtro por Status -->
                     <div class="mb-4" style="width: 12rem;">
                         <label for="status" class="form-label">Status</label>
                         <select name="status" id="status" class="form-control">
@@ -62,7 +53,6 @@
                         </select>
                     </div>
                     
-                    <!-- Botão Buscar -->
                     <div class="mb-4">
                         <button type="submit" class="btn btn-primary">
                             <i class="fas fa-search"></i>
@@ -72,39 +62,31 @@
                 </div>
             </form>
             
-            <!-- Resultados -->
             {% if activities %}
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 animate-fadeIn">
                     {% for activity in activities %}
                         <a href="{% url 'activity_detail' activity.pk %}" class="activity-card">
-                            <!-- Barra gradiente no topo baseada no tipo -->
                             <div class="activity-card-header gradient-{% if activity.type == 'COURSE' %}course{% elif activity.type == 'WORKSHOP' %}workshop{% elif activity.type == 'SEMINAR' %}seminar{% elif activity.type == 'RESEARCH' %}research{% elif activity.type == 'EXTENSION' %}extension{% else %}other{% endif %}"></div>
                             
                             <div class="activity-card-body">
-                                <!-- Status, Tipo e Ícone -->
                                 <div class="flex justify-between items-center mb-3">
                                     <div class="flex items-center gap-2">
-                                        <!-- Badge de Status -->
-                                        <span class="badge {% if activity.status == 'PENDING' or activity.status == 'UPCOMING' %}badge-pending{% elif activity.status == 'IN_PROGRESS' or activity.status == 'ACTIVE' %}badge-in-progress{% elif activity.status == 'COMPLETED' %}badge-completed{% elif activity.status == 'CANCELLED' %}badge-cancelled{% else %}badge-type{% endif %}">
-                                            {% if activity.status == 'UPCOMING' %}Pendente{% elif activity.status == 'ACTIVE' %}Em Andamento{% else %}{{ activity.get_status_display }}{% endif %}
+                                        <span class="badge {% if activity.status == 'PENDING' %}badge-pending{% elif activity.status == 'IN_PROGRESS' %}badge-in-progress{% elif activity.status == 'COMPLETED' %}badge-completed{% elif activity.status == 'CANCELLED' %}badge-cancelled{% else %}badge-type{% endif %}">
+                                            {{ activity.get_status_display }}
                                         </span>
-                                        <!-- Badge de Tipo -->
                                         <span class="badge badge-type">
                                             {{ activity.get_type_display }}
                                         </span>
                                     </div>
-                                    <!-- Ícone do tipo -->
                                     <div class="text-2xl">
                                         {{ activity.get_icon }}
                                     </div>
                                 </div>
                                 
-                                <!-- Título -->
                                 <h3 class="text-lg font-semibold text-gray-900 mb-2">
                                     {{ activity.title }}
                                 </h3>
                                 
-                                <!-- Informações -->
                                 <div class="mt-auto space-y-2 text-sm text-gray-500">
                                     <div class="flex items-center">
                                         <i class="fas fa-calendar mr-2"></i>
@@ -125,41 +107,23 @@
                                         </div>
                                     {% endif %}
                                 </div>
-                                
-                                <!-- Tags -->
-                                {% if activity.tags.all %}
-                                    <div class="mt-3 flex gap-1" style="flex-wrap: wrap;">
-                                        {% for tag in activity.tags.all|slice:":3" %}
-                                            <span class="badge badge-type">
-                                                <i class="fas fa-tag mr-1"></i>
-                                                {{ tag.name }}
-                                            </span>
-                                        {% endfor %}
-                                        {% if activity.tags.all|length > 3 %}
-                                            <span class="badge badge-type">
-                                                +{{ activity.tags.all|length|add:"-3" }}
-                                            </span>
-                                        {% endif %}
-                                    </div>
-                                {% endif %}
                             </div>
                         </a>
                     {% endfor %}
                 </div>
             {% else %}
-                <!-- Estado vazio -->
                 <div class="empty-state">
                     <div class="empty-state-icon">
                         <i class="fas fa-search text-6xl text-gray-300"></i>
                     </div>
                     <h3 class="empty-state-title">Nenhuma atividade encontrada</h3>
                     <p class="empty-state-text">
-                        Não encontramos nenhuma atividade com os filtros selecionados. Tente ajustar os filtros ou criar uma nova atividade.
+                        {% if request.GET.search %}
+                            Não encontramos resultados para "{{ request.GET.search }}". Tente outros termos.
+                        {% else %}
+                            Digite algo para pesquisar atividades.
+                        {% endif %}
                     </p>
-                    <a href="{% url 'activity_create' %}" class="btn btn-primary">
-                        <i class="fas fa-plus"></i>
-                        Criar Nova Atividade
-                    </a>
                 </div>
             {% endif %}
         </div>

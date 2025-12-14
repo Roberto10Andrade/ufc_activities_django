@@ -1,9 +1,11 @@
 <!DOCTYPE html>
-<html lang="pt-BR" class="{% if request.session.dark_theme %}dark{% endif %}">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}UFC Sobral Activities{% endblock %}</title>
+    
+    {% load static %}
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -15,9 +17,15 @@
                     colors: {
                         primary: {
                             50: '#eff6ff',
+                            100: '#dbeafe',
+                            200: '#bfdbfe',
+                            300: '#93c5fd',
+                            400: '#60a5fa',
                             500: '#3b82f6',
                             600: '#2563eb',
                             700: '#1d4ed8',
+                            800: '#1e40af',
+                            900: '#1e3a8a',
                         }
                     }
                 }
@@ -25,150 +33,119 @@
         }
     </script>
     
-    <!-- Custom CSS -->
-    {% load static %}
     <link rel="stylesheet" href="{% static 'css/globals.css' %}">
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
     <link rel="stylesheet" href="{% static 'css/custom.css' %}">
     
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <!-- HTMX -->
-    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
 </head>
-<body class="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100" data-font-size="normal" data-contrast="normal" data-dyslexia="false">
-    
-    <!-- Script de Acessibilidade -->
-    <script src="{% static 'js/accessibility.js' %}"></script>
-
-    <!-- Botão Toggle Sidebar -->
-    <button id="navbarToggle" class="navbar-toggle fixed z-[60] top-4 p-2 bg-white/90 backdrop-blur rounded-lg shadow-lg hover:bg-white transition-all duration-300" style="left: 270px;">
-        <svg id="toggle-icon" class="w-6 h-6 text-gray-800" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-        </svg>
-    </button>
+<body>
 
     <!-- Sidebar -->
-    <aside id="sidebar" class="sidebar fixed left-0 top-0 w-64 h-screen overflow-y-auto bg-gradient-to-b from-[#3b82f6] to-[#2563eb] dark:from-[#60a5fa] dark:to-[#3b82f6] text-white shadow-xl z-50 transition-transform duration-300">
-        <div class="sidebar-content pt-8 px-6 min-h-screen flex flex-col">
+    <aside class="sidebar">
+        <div class="sidebar-content">
             
             <!-- Logo -->
-            <div class="logo-container flex flex-col items-center justify-center mb-8">
-                <img src="{% static 'images/Imagem1.png' %}" alt="UFC Sobral Logo" class="logo w-full max-w-[200px] h-auto object-contain mb-4">
+            <div class="logo-container">
+                <img src="{% static 'images/Imagem1.png' %}" alt="UFC Sobral Logo" class="logo">
             </div>
 
             <!-- Barra de Pesquisa -->
-            <div class="search-container relative mb-6">
+            <div class="search-container">
                 <form action="{% url 'activity_list' %}" method="get">
-                    <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/60" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                    </svg>
-                    <input type="search" name="search" placeholder="Pesquisar atividades..." class="w-full bg-white/10 border border-white/20 rounded-xl text-white pl-10 pr-4 py-2 text-sm placeholder-white/60 focus:outline-none focus:border-white/50 focus:bg-white/20 transition-all duration-300">
+                    <input type="search" name="search" placeholder="Pesquisar atividades..." class="search-input">
                 </form>
             </div>
 
             <!-- Navegação -->
-            <nav class="nav-menu flex flex-col gap-2 flex-1">
-                <span class="text-xs uppercase font-medium text-white/60 mb-2 px-2">Menu Principal</span>
+            <nav class="nav-menu">
+                <span class="nav-section-title">Menu Principal</span>
                 
                 <!-- Link Início -->
-                <a href="{% url 'dashboard' %}" class="nav-link flex items-center gap-3 p-2 rounded-lg hover:bg-white/10 transition-all duration-200 {% if request.path == '/' %}active bg-white/20{% endif %}">
-                    <svg class="nav-icon w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-                    </svg>
-                    <span class="text-sm font-medium">Início</span>
+                <a href="{% url 'dashboard' %}" class="nav-link {% if request.path == '/' %}active{% endif %}">
+                    <i class="fas fa-home nav-icon"></i>
+                    <span>Início</span>
                 </a>
 
                 <!-- Link Nova Atividade -->
-                <a href="{% url 'activity_create' %}" class="nav-link flex items-center gap-3 p-2 rounded-lg hover:bg-white/10 transition-all duration-200 {% if 'create' in request.path %}active bg-white/20{% endif %}">
-                    <svg class="nav-icon w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-                    </svg>
-                    <span class="text-sm font-medium">Nova Atividade</span>
+                <a href="{% url 'activity_create' %}" class="nav-link {% if 'new' in request.path %}active{% endif %}">
+                    <i class="fas fa-plus nav-icon"></i>
+                    <span>Nova Atividade</span>
                 </a>
 
                 <!-- Link Atividades -->
-                <a href="{% url 'activity_list' %}" class="nav-link flex items-center gap-3 p-2 rounded-lg hover:bg-white/10 transition-all duration-200 {% if 'activities' in request.path and 'create' not in request.path %}active bg-white/20{% endif %}">
-                    <svg class="nav-icon w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-                    </svg>
-                    <span class="text-sm font-medium">Atividades</span>
+                <a href="{% url 'activity_list' %}" class="nav-link {% if 'atividades' in request.path and 'new' not in request.path %}active{% endif %}">
+                    <i class="fas fa-list nav-icon"></i>
+                    <span>Atividades</span>
                 </a>
 
-                <!-- Botão Acessibilidade com Dropdown -->
-                <div class="nav-dropdown w-full" id="accessibility-dropdown">
-                    <button id="accessibilityBtn" onclick="toggleAccessibilityDropdown()" class="nav-link flex items-center gap-3 p-2 rounded-lg hover:bg-white/10 transition-all duration-200 w-full text-left">
-                        <svg class="nav-icon w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
-                        </svg>
-                        <span class="text-sm font-medium flex-1">Acessibilidade</span>
-                        <svg id="accessibility-arrow" class="w-4 h-4 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                        </svg>
-                    </button>
+                <!-- Acessibilidade -->
+                <details class="nav-dropdown">
+                    <summary class="nav-link">
+                        <i class="fas fa-universal-access nav-icon"></i>
+                        <span style="flex: 1;">Acessibilidade</span>
+                        <i class="fas fa-chevron-down dropdown-arrow"></i>
+                    </summary>
                     
-                    <!-- Dropdown Content -->
-                    <div id="accessibility-content" class="dropdown-content overflow-hidden transition-all duration-200" style="max-height: 0; opacity: 0;">
-                        <div class="p-3 mt-2 bg-black/20 rounded-xl space-y-4">
-                            <!-- Tamanho da Fonte -->
-                            <div>
-                                <h3 class="text-xs font-semibold mb-2 text-white/80 uppercase tracking-wider flex items-center gap-2">
-                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25H12" />
-                                    </svg>
-                                    Fonte
-                                </h3>
-                                <div class="flex gap-2">
-                                    <button onclick="setFontSize('normal')" data-font-btn="normal" class="flex-1 px-2 py-2 rounded font-semibold text-sm bg-white/10 text-white hover:bg-white/20 transition-all duration-200">A</button>
-                                    <button onclick="setFontSize('large')" data-font-btn="large" class="flex-1 px-2 py-2 rounded font-semibold text-sm bg-white/10 text-white hover:bg-white/20 transition-all duration-200">A+</button>
-                                    <button onclick="setFontSize('larger')" data-font-btn="larger" class="flex-1 px-2 py-2 rounded font-semibold text-sm bg-white/10 text-white hover:bg-white/20 transition-all duration-200">A++</button>
-                                </div>
+                    <div class="dropdown-inner">
+                        <!-- Tamanho da Fonte -->
+                        <div class="dropdown-section">
+                            <h3 class="dropdown-title">
+                                <i class="fas fa-text-height dropdown-title-icon"></i>
+                                Fonte
+                            </h3>
+                            <div class="btn-group">
+                                <a href="?font_size=normal" class="btn-option">A</a>
+                                <a href="?font_size=large" class="btn-option">A+</a>
+                                <a href="?font_size=larger" class="btn-option">A++</a>
                             </div>
+                        </div>
 
-                            <!-- Contraste -->
-                            <div>
-                                <h3 class="text-xs font-semibold mb-2 text-white/80 uppercase tracking-wider flex items-center gap-2">
-                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707" />
-                                    </svg>
-                                    Contraste
-                                </h3>
-                                <div class="flex flex-col gap-2">
-                                    <button onclick="setContrast('normal')" data-contrast-btn="normal" class="px-3 py-2 rounded font-medium text-xs text-left bg-white/10 text-white hover:bg-white/20 transition-all duration-200">Normal</button>
-                                    <button onclick="setContrast('high')" data-contrast-btn="high" class="px-3 py-2 rounded font-medium text-xs text-left bg-white/10 text-white hover:bg-white/20 transition-all duration-200">Alto Contraste</button>
-                                    <button onclick="setContrast('inverted')" data-contrast-btn="inverted" class="px-3 py-2 rounded font-medium text-xs text-left bg-white/10 text-white hover:bg-white/20 transition-all duration-200">Invertido</button>
-                                </div>
+                        <!-- Contraste -->
+                        <div class="dropdown-section">
+                            <h3 class="dropdown-title">
+                                <i class="fas fa-adjust dropdown-title-icon"></i>
+                                Contraste
+                            </h3>
+                            <div class="btn-group-vertical">
+                                <a href="?contrast=normal" class="btn-option-full">Normal</a>
+                                <a href="?contrast=high" class="btn-option-full">Alto Contraste</a>
                             </div>
+                        </div>
 
-                            <!-- Dislexia -->
-                            <div>
-                                <button onclick="toggleDyslexia()" id="dyslexia-btn" class="w-full px-3 py-2 rounded font-medium text-xs flex items-center gap-2 bg-white/10 text-white hover:bg-white/20 transition-all duration-200">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
-                                    </svg>
-                                    <span id="dyslexia-text">Fonte para Dislexia</span>
-                                </button>
+                        <!-- Dislexia -->
+                        <div class="dropdown-section">
+                            <h3 class="dropdown-title">
+                                <i class="fas fa-book-reader dropdown-title-icon"></i>
+                                Dislexia
+                            </h3>
+                            <div class="btn-group-vertical">
+                                <a href="?dyslexia=false" class="btn-option-full btn-with-icon">
+                                    <i class="fas fa-font btn-icon"></i>
+                                    Fonte Normal
+                                </a>
+                                <a href="?dyslexia=true" class="btn-option-full btn-with-icon">
+                                    <i class="fas fa-book-open btn-icon"></i>
+                                    Fonte para Dislexia
+                                </a>
                             </div>
                         </div>
                     </div>
-                </div>
+                </details>
             </nav>
-
 
         </div>
     </aside>
 
     <!-- Conteúdo Principal -->
-    <main id="mainContent" class="main-content ml-64 p-8 min-h-screen transition-all duration-300">
+    <main class="main-content">
         <!-- Messages -->
         {% if messages %}
-            <div class="max-w-7xl mx-auto mb-6">
+            <div class="messages-container">
                 {% for message in messages %}
-                    <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4 flex items-center justify-between" role="alert">
+                    <div class="alert" role="alert">
                         <span>{{ message }}</span>
-                        <button onclick="this.parentElement.remove()" class="text-green-700 hover:text-green-900">
-                            <i class="fas fa-times"></i>
-                        </button>
                     </div>
                 {% endfor %}
             </div>
@@ -181,38 +158,6 @@
         {% include 'partials/footer.html' %}
     </main>
     
-    <!-- JavaScript -->
-    <script src="{% static 'js/theme.js' %}"></script>
-    <script src="{% static 'js/main.js' %}"></script>
-    
-    <script>
-    // Toggle Sidebar
-    document.addEventListener('DOMContentLoaded', function() {
-        const sidebar = document.getElementById('sidebar');
-        const toggle = document.getElementById('navbarToggle');
-        const mainContent = document.getElementById('mainContent');
-        const toggleIcon = document.getElementById('toggle-icon').querySelector('path');
-        
-        toggle.addEventListener('click', function() {
-            const isHidden = sidebar.classList.toggle('-translate-x-full');
-            
-            if (isHidden) {
-                // Sidebar oculta - mostrar ícone hamburguer
-                mainContent.classList.remove('ml-64');
-                mainContent.classList.add('ml-0');
-                toggle.style.left = '16px';
-                toggleIcon.setAttribute('d', 'M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5');
-            } else {
-                // Sidebar visível - mostrar ícone X
-                mainContent.classList.remove('ml-0');
-                mainContent.classList.add('ml-64');
-                toggle.style.left = '270px';
-                toggleIcon.setAttribute('d', 'M6 18L18 6M6 6l12 12');
-            }
-        });
-    });
-    </script>
-    
-    {% block extra_js %}{% endblock %}
+    {% block extra_css %}{% endblock %}
 </body>
 </html>

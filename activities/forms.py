@@ -17,7 +17,7 @@ class ActivityForm(forms.ModelForm):
     class Meta:
         model = Activity
         fields = [
-            'title', 'description', 'status',
+            'title', 'type', 'description', 'status',
             'start_date', 'end_date', 'location',
             'coordinator', 'participants'
         ]
@@ -52,6 +52,9 @@ class ActivityForm(forms.ModelForm):
                 'min': 1
             }),
             'status': forms.Select(attrs={
+                'class': 'w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500'
+            }),
+            'type': forms.Select(attrs={
                 'class': 'w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500'
             }),
         }

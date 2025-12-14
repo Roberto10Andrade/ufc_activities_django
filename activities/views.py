@@ -96,8 +96,8 @@ def dashboard_view(request):
     """View para o dashboard com estatísticas"""
     context = {
         'total_activities': Activity.objects.count(),
-        'active_activities': Activity.objects.filter(status='ACTIVE').count(),
-        'upcoming_activities': Activity.objects.filter(status='UPCOMING').count(),
+        'active_activities': Activity.objects.filter(status='IN_PROGRESS').count(),
+        'upcoming_activities': Activity.objects.filter(status='PENDING').count(),
         'completed_activities': Activity.objects.filter(status='COMPLETED').count(),
         'recent_activities': Activity.objects.order_by('-created_at')[:5],
         'activities_by_type': Activity.objects.values('type').annotate(count=Count('type')),
@@ -105,11 +105,11 @@ def dashboard_view(request):
     return render(request, 'dashboard/index.html', context)
 
 
-def activity_search_htmx(request):
-    """View para busca de atividades via HTMX"""
+def search_view(request):
+    """View para a página de busca"""
     queryset = Activity.objects.all()
     
-    search = request.GET.get('search', '')
+    search = request.GET.get('search')
     if search:
         queryset = queryset.filter(
             Q(title__icontains=search) |
@@ -125,9 +125,15 @@ def activity_search_htmx(request):
     status = request.GET.get('status')
     if status:
         queryset = queryset.filter(status=status)
+        
+    queryset = queryset.order_by('-created_at')
     
-    queryset = queryset.order_by('-created_at')[:50]
-    
-    return render(request, 'activities/partials/activity_results.html', {
-        'activities': queryset
-    })
+    context = {
+        'activities': queryset,
+        'activity_types': Activity.ACTIVITY_TYPES,
+        'status_choices': Activity.STATUS_CHOICES,
+    }
+    return render(request, 'activities/search.html', context)
+
+
+
