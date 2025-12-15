@@ -34,7 +34,12 @@ class ActivityListView(ListView):
             
         status = self.request.GET.get('status')
         if status:
-            queryset = queryset.filter(status=status)
+            if status == 'UPCOMING':
+                queryset = queryset.filter(status__in=['PENDING', 'UPCOMING'])
+            elif status == 'ACTIVE':
+                queryset = queryset.filter(status__in=['IN_PROGRESS', 'ACTIVE'])
+            else:
+                queryset = queryset.filter(status=status)
             
         return queryset.order_by('-created_at')
     
@@ -96,8 +101,8 @@ def dashboard_view(request):
     """View para o dashboard com estatísticas"""
     context = {
         'total_activities': Activity.objects.count(),
-        'active_activities': Activity.objects.filter(status='IN_PROGRESS').count(),
-        'upcoming_activities': Activity.objects.filter(status='PENDING').count(),
+        'active_activities': Activity.objects.filter(status__in=['IN_PROGRESS', 'ACTIVE']).count(),
+        'upcoming_activities': Activity.objects.filter(status__in=['PENDING', 'UPCOMING']).count(),
         'completed_activities': Activity.objects.filter(status='COMPLETED').count(),
         'recent_activities': Activity.objects.order_by('-created_at')[:5],
         'activities_by_type': Activity.objects.values('type').annotate(count=Count('type')),
@@ -124,7 +129,12 @@ def search_view(request):
         
     status = request.GET.get('status')
     if status:
-        queryset = queryset.filter(status=status)
+        if status == 'UPCOMING':
+            queryset = queryset.filter(status__in=['PENDING', 'UPCOMING'])
+        elif status == 'ACTIVE':
+            queryset = queryset.filter(status__in=['IN_PROGRESS', 'ACTIVE'])
+        else:
+            queryset = queryset.filter(status=status)
         
     queryset = queryset.order_by('-created_at')
     

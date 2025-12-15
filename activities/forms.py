@@ -1,12 +1,13 @@
 from django import forms
 from .models import Activity, ActivityTag
 
+FORM_INPUT_CLASS = 'w-full px-4 py-3 bg-white border-2 border-gray-200 rounded-lg text-base transition-all duration-200 focus:border-blue-500 focus:outline-none hover:border-blue-300 placeholder-gray-400'
 
 class ActivityForm(forms.ModelForm):
     tags = forms.CharField(
         required=True,
         widget=forms.Textarea(attrs={
-            'class': 'w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500',
+            'class': FORM_INPUT_CLASS,
             'rows': 2,
             'placeholder': 'Digite as tags separadas por vírgula'
         }),
@@ -23,39 +24,39 @@ class ActivityForm(forms.ModelForm):
         ]
         widgets = {
             'title': forms.TextInput(attrs={
-                'class': 'w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500',
+                'class': FORM_INPUT_CLASS,
                 'placeholder': 'Digite o título da atividade'
             }),
             'description': forms.Textarea(attrs={
-                'class': 'w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500',
+                'class': FORM_INPUT_CLASS,
                 'rows': 4,
                 'placeholder': 'Descreva os detalhes da atividade'
             }),
             'start_date': forms.DateInput(attrs={
-                'class': 'w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500',
+                'class': FORM_INPUT_CLASS,
                 'type': 'date'
             }),
             'end_date': forms.DateInput(attrs={
-                'class': 'w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500',
+                'class': FORM_INPUT_CLASS,
                 'type': 'date'
             }),
             'location': forms.TextInput(attrs={
-                'class': 'w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500',
+                'class': FORM_INPUT_CLASS,
                 'placeholder': 'Ex: Laboratório de Informática 1'
             }),
             'coordinator': forms.TextInput(attrs={
-                'class': 'w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500',
+                'class': FORM_INPUT_CLASS,
                 'placeholder': 'Ex: Prof. João Silva'
             }),
             'participants': forms.NumberInput(attrs={
-                'class': 'w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500',
+                'class': FORM_INPUT_CLASS,
                 'min': 1
             }),
             'status': forms.Select(attrs={
-                'class': 'w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500'
+                'class': FORM_INPUT_CLASS
             }),
             'type': forms.Select(attrs={
-                'class': 'w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500'
+                'class': FORM_INPUT_CLASS
             }),
         }
 
@@ -118,7 +119,7 @@ class ActivitySearchForm(forms.Form):
         max_length=200,
         required=False,
         widget=forms.TextInput(attrs={
-            'class': 'form-control',
+            'class': FORM_INPUT_CLASS,
             'placeholder': 'Buscar atividades...',
             'autocomplete': 'off'
         })
@@ -126,10 +127,10 @@ class ActivitySearchForm(forms.Form):
     type = forms.ChoiceField(
         choices=[('', 'Todos os tipos')] + Activity.ACTIVITY_TYPES,
         required=False,
-        widget=forms.Select(attrs={'class': 'form-control'})
+        widget=forms.Select(attrs={'class': FORM_INPUT_CLASS})
     )
     status = forms.ChoiceField(
         choices=[('', 'Todos os status')] + Activity.STATUS_CHOICES,
         required=False,
-        widget=forms.Select(attrs={'class': 'form-control'})
+        widget=forms.Select(attrs={'class': FORM_INPUT_CLASS})
     )

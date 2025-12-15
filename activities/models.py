@@ -16,7 +16,9 @@ class Activity(models.Model):
 
     class ActivityStatus(models.TextChoices):
         PENDING = 'PENDING', _('Pendente')
+        UPCOMING = 'UPCOMING', _('Pendente')
         IN_PROGRESS = 'IN_PROGRESS', _('Em Andamento')
+        ACTIVE = 'ACTIVE', _('Em Andamento')
         COMPLETED = 'COMPLETED', _('Concluída')
         CANCELLED = 'CANCELLED', _('Cancelada')
 
@@ -31,7 +33,9 @@ class Activity(models.Model):
     
     STATUS_CHOICES = [
         ('PENDING', 'Pendente'),
+        ('UPCOMING', 'Pendente'),
         ('IN_PROGRESS', 'Em Andamento'),
+        ('ACTIVE', 'Em Andamento'),
         ('COMPLETED', 'Concluída'),
         ('CANCELLED', 'Cancelada'),
     ]

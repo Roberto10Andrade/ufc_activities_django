@@ -4,77 +4,82 @@
 {% block title %}Pesquisar Atividades - UFC Sobral{% endblock %}
 
 {% block content %}
-<div class="py-8">
-    <div class="max-w-7xl mx-auto px-4">
-        <div class="card">
-            <div class="flex items-center justify-between mb-6 pb-6 border-b border-gray-200">
+<div class="max-w-7xl mx-auto">
+    <div class="bg-white rounded-xl shadow-lg p-6 border border-gray-100">
+        <!-- Header -->
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-6 pb-6 border-b border-gray-100">
+            <div>
+                <h1 class="text-2xl md:text-3xl font-bold text-gray-900 mb-1">Pesquisar Atividades</h1>
+                <p class="text-gray-500">Encontre atividades da UFC Sobral</p>
+            </div>
+        </div>
+        
+        <!-- Formulário de Busca -->
+        <form method="GET" class="mb-8">
+            <div class="flex flex-wrap gap-4 items-end">
+                <!-- Campo de busca -->
+                <div class="flex-1 min-w-[250px]">
+                    <label for="search" class="flex items-center gap-2 text-sm font-semibold text-gray-700 mb-2">Buscar</label>
+                    <input type="text" 
+                           name="search" 
+                           id="search"
+                           value="{{ request.GET.search }}"
+                           placeholder="Digite sua busca..."
+                           class="w-full px-4 py-3 bg-white border-2 border-gray-200 rounded-lg text-base transition-all duration-200 focus:border-blue-500 focus:outline-none hover:border-blue-300"
+                           autofocus>
+                </div>
+                
+                <!-- Filtro por Tipo -->
+                <div class="w-full md:w-[180px]">
+                    <label for="type" class="flex items-center gap-2 text-sm font-semibold text-gray-700 mb-2">Tipo</label>
+                    <select name="type" id="type" class="w-full px-4 py-3 bg-white border-2 border-gray-200 rounded-lg text-base transition-all duration-200 focus:border-blue-500 focus:outline-none hover:border-blue-300">
+                        <option value="">Todos os tipos</option>
+                        {% for value, label in activity_types %}
+                            <option value="{{ value }}" {% if request.GET.type == value %}selected{% endif %}>
+                                {{ label }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                
+                <!-- Filtro por Status -->
+                <div class="w-full md:w-[180px]">
+                    <label for="status" class="flex items-center gap-2 text-sm font-semibold text-gray-700 mb-2">Status</label>
+                    <select name="status" id="status" class="w-full px-4 py-3 bg-white border-2 border-gray-200 rounded-lg text-base transition-all duration-200 focus:border-blue-500 focus:outline-none hover:border-blue-300">
+                        <option value="">Todos os status</option>
+                        {% for value, label in status_choices %}
+                            <option value="{{ value }}" {% if request.GET.status == value %}selected{% endif %}>
+                                {{ label }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                
+                <!-- Botão de Busca -->
                 <div>
-                    <h1 class="text-3xl font-bold text-gray-900 mb-2">Pesquisar Atividades</h1>
-                    <p class="text-gray-600">Encontre atividades da UFC Sobral</p>
+                    <button type="submit" class="inline-flex items-center gap-2 bg-gradient-to-r from-blue-500 to-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:from-blue-600 hover:to-blue-700 transition-all duration-200 shadow-lg">
+                        <i class="fas fa-search"></i>
+                        Buscar
+                    </button>
                 </div>
             </div>
-            
-            <form method="GET" class="space-y-4 mb-8">
-                <div class="md:flex md:items-end md:gap-4">
-                    <div class="flex-1 mb-4">
-                        <label for="search" class="form-label">Buscar</label>
-                        <div class="relative">
-                            <input type="text" 
-                                   name="search" 
-                                   id="search"
-                                   value="{{ request.GET.search }}"
-                                   placeholder="Digite sua busca..."
-                                   class="form-control"
-                                   autofocus>
-                        </div>
-                    </div>
-                    
-                    <div class="mb-4" style="width: 12rem;">
-                        <label for="type" class="form-label">Tipo</label>
-                        <select name="type" id="type" class="form-control">
-                            <option value="">Todos os tipos</option>
-                            {% for value, label in activity_types %}
-                                <option value="{{ value }}" {% if request.GET.type == value %}selected{% endif %}>
-                                    {{ label }}
-                                </option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                    
-                    <div class="mb-4" style="width: 12rem;">
-                        <label for="status" class="form-label">Status</label>
-                        <select name="status" id="status" class="form-control">
-                            <option value="">Todos os status</option>
-                            {% for value, label in status_choices %}
-                                <option value="{{ value }}" {% if request.GET.status == value %}selected{% endif %}>
-                                    {{ label }}
-                                </option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                    
-                    <div class="mb-4">
-                        <button type="submit" class="btn btn-primary">
-                            <i class="fas fa-search"></i>
-                            Buscar
-                        </button>
-                    </div>
-                </div>
-            </form>
-            
-            {% if activities %}
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 animate-fadeIn">
-                    {% for activity in activities %}
-                        <a href="{% url 'activity_detail' activity.pk %}" class="activity-card">
-                            <div class="activity-card-header gradient-{% if activity.type == 'COURSE' %}course{% elif activity.type == 'WORKSHOP' %}workshop{% elif activity.type == 'SEMINAR' %}seminar{% elif activity.type == 'RESEARCH' %}research{% elif activity.type == 'EXTENSION' %}extension{% else %}other{% endif %}"></div>
+        </form>
+        
+        <!-- Resultados -->
+        {% if activities %}
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {% for activity in activities %}
+                    <a href="{% url 'activity_detail' activity.pk %}" class="group block">
+                        <div class="relative overflow-hidden rounded-xl bg-white border border-gray-100 shadow-md hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+                            <div class="h-1.5 w-full {% if activity.type == 'COURSE' %}bg-gradient-to-r from-blue-500 to-indigo-600{% elif activity.type == 'WORKSHOP' %}bg-gradient-to-r from-purple-500 to-violet-600{% elif activity.type == 'SEMINAR' %}bg-gradient-to-r from-emerald-500 to-teal-600{% elif activity.type == 'RESEARCH' %}bg-gradient-to-r from-amber-500 to-orange-600{% elif activity.type == 'EXTENSION' %}bg-gradient-to-r from-rose-500 to-pink-600{% else %}bg-gradient-to-r from-gray-500 to-slate-600{% endif %}"></div>
                             
-                            <div class="activity-card-body">
-                                <div class="flex justify-between items-center mb-3">
-                                    <div class="flex items-center gap-2">
-                                        <span class="badge {% if activity.status == 'PENDING' %}badge-pending{% elif activity.status == 'IN_PROGRESS' %}badge-in-progress{% elif activity.status == 'COMPLETED' %}badge-completed{% elif activity.status == 'CANCELLED' %}badge-cancelled{% else %}badge-type{% endif %}">
-                                            {{ activity.get_status_display }}
+                            <div class="p-5">
+                                <div class="flex justify-between items-start mb-3">
+                                    <div class="flex flex-wrap items-center gap-2">
+                                        <span class="px-2.5 py-1 rounded-full text-xs font-medium {% if activity.status == 'PENDING' or activity.status == 'UPCOMING' %}bg-yellow-100 text-yellow-800{% elif activity.status == 'IN_PROGRESS' or activity.status == 'ACTIVE' %}bg-blue-100 text-blue-800{% elif activity.status == 'COMPLETED' %}bg-green-100 text-green-800{% elif activity.status == 'CANCELLED' %}bg-red-100 text-red-800{% else %}bg-gray-100 text-gray-800{% endif %}">
+                                            {% if activity.status == 'UPCOMING' %}Pendente{% elif activity.status == 'ACTIVE' %}Em Andamento{% else %}{{ activity.get_status_display }}{% endif %}
                                         </span>
-                                        <span class="badge badge-type">
+                                        <span class="px-2.5 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-700">
                                             {{ activity.get_type_display }}
                                         </span>
                                     </div>
@@ -83,50 +88,50 @@
                                     </div>
                                 </div>
                                 
-                                <h3 class="text-lg font-semibold text-gray-900 mb-2">
+                                <h3 class="text-lg font-semibold text-gray-900 mb-3 group-hover:text-blue-600 transition-colors">
                                     {{ activity.title }}
                                 </h3>
                                 
-                                <div class="mt-auto space-y-2 text-sm text-gray-500">
-                                    <div class="flex items-center">
-                                        <i class="fas fa-calendar mr-2"></i>
-                                        {{ activity.start_date|date:"d/m/Y" }}
+                                <div class="space-y-2 text-sm text-gray-500">
+                                    <div class="flex items-center gap-2">
+                                        <i class="fas fa-calendar w-4 text-center text-gray-400"></i>
+                                        <span>{{ activity.start_date|date:"d/m/Y" }}</span>
                                     </div>
                                     
                                     {% if activity.coordinator %}
-                                        <div class="flex items-center">
-                                            <i class="fas fa-user mr-2"></i>
-                                            {{ activity.coordinator }}
+                                        <div class="flex items-center gap-2">
+                                            <i class="fas fa-user w-4 text-center text-gray-400"></i>
+                                            <span>{{ activity.coordinator }}</span>
                                         </div>
                                     {% endif %}
                                     
                                     {% if activity.location %}
-                                        <div class="flex items-center">
-                                            <i class="fas fa-map-marker-alt mr-2"></i>
-                                            {{ activity.location }}
+                                        <div class="flex items-center gap-2">
+                                            <i class="fas fa-map-marker-alt w-4 text-center text-gray-400"></i>
+                                            <span>{{ activity.location }}</span>
                                         </div>
                                     {% endif %}
                                 </div>
                             </div>
-                        </a>
-                    {% endfor %}
+                        </div>
+                    </a>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="flex flex-col items-center justify-center py-16 text-center">
+                <div class="w-20 h-20 rounded-full bg-gray-100 flex items-center justify-center mb-4">
+                    <i class="fas fa-search text-3xl text-gray-300"></i>
                 </div>
-            {% else %}
-                <div class="empty-state">
-                    <div class="empty-state-icon">
-                        <i class="fas fa-search text-6xl text-gray-300"></i>
-                    </div>
-                    <h3 class="empty-state-title">Nenhuma atividade encontrada</h3>
-                    <p class="empty-state-text">
-                        {% if request.GET.search %}
-                            Não encontramos resultados para "{{ request.GET.search }}". Tente outros termos.
-                        {% else %}
-                            Digite algo para pesquisar atividades.
-                        {% endif %}
-                    </p>
-                </div>
-            {% endif %}
-        </div>
+                <h3 class="text-xl font-semibold text-gray-900 mb-2">Nenhuma atividade encontrada</h3>
+                <p class="text-gray-500 max-w-md">
+                    {% if request.GET.search %}
+                        Não encontramos resultados para "{{ request.GET.search }}". Tente outros termos.
+                    {% else %}
+                        Digite algo para pesquisar atividades.
+                    {% endif %}
+                </p>
+            </div>
+        {% endif %}
     </div>
 </div>
 {% endblock %}

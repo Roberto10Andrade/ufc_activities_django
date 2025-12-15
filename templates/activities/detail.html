@@ -5,156 +5,152 @@
 
 {% block content %}
 {% if activity %}
-<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden">
+<div class="max-w-4xl mx-auto">
+    <div class="bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-100">
         <!-- Header com gradiente baseado no tipo -->
-        <div class="bg-gradient-to-br {{ activity.get_gradient_class }} h-48 flex items-center justify-center relative">
+        <div class="h-48 flex items-center justify-center relative {% if activity.type == 'COURSE' %}bg-gradient-to-br from-blue-500 to-indigo-600{% elif activity.type == 'WORKSHOP' %}bg-gradient-to-br from-purple-500 to-violet-600{% elif activity.type == 'SEMINAR' %}bg-gradient-to-br from-emerald-500 to-teal-600{% elif activity.type == 'RESEARCH' %}bg-gradient-to-br from-amber-500 to-orange-600{% elif activity.type == 'EXTENSION' %}bg-gradient-to-br from-rose-500 to-pink-600{% else %}bg-gradient-to-br from-gray-500 to-slate-600{% endif %}">
             <span class="text-8xl">
                 {{ activity.get_icon }}
             </span>
             <div class="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-black/30 to-transparent"></div>
         </div>
 
-        <div class="p-8">
-            <div class="flex flex-col gap-6">
-                <!-- Cabeçalho -->
-                <div class="space-y-4">
-                    <div class="flex items-center justify-between">
-                        <h1 class="text-3xl font-bold text-gray-900 dark:text-white">
-                            {{ activity.title }}
-                        </h1>
-                        <div class="flex items-center gap-2">
-                            <a href="{% url 'activity_update' activity.pk %}" 
-                               class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-blue-600 bg-blue-50 rounded-lg hover:bg-blue-100 dark:text-blue-400 dark:bg-blue-900/50 dark:hover:bg-blue-900 transition-colors">
-                                <i class="fas fa-pen w-4 h-4"></i>
-                                Editar
-                            </a>
-                            <a href="{% url 'activity_delete' activity.pk %}" 
-                               class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-red-600 bg-red-50 rounded-lg hover:bg-red-100 dark:text-red-400 dark:bg-red-900/50 dark:hover:bg-red-900 transition-colors">
-                                <i class="fas fa-trash w-4 h-4"></i>
-                                Excluir
-                            </a>
-                            <a href="{% url 'activity_list' %}" 
-                               class="inline-flex items-center gap-2 px-4 py-2 text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">
-                                <i class="fas fa-arrow-left"></i>
-                                Voltar
-                            </a>
-                        </div>
-                    </div>
-                    
-                    <!-- Tags -->
-                    {% if activity.tags.all %}
-                        <div class="flex flex-wrap gap-2">
-                            {% for tag in activity.tags.all %}
-                                <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gray-100/80 text-gray-800 dark:bg-gray-700/80 dark:text-gray-200 backdrop-blur-sm">
-                                    #{{ tag.name }}
-                                </span>
-                            {% endfor %}
-                        </div>
-                    {% endif %}
-                </div>
-
-                <!-- Informações principais -->
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <!-- Coluna Esquerda -->
-                    <div class="space-y-4">
-                        <!-- Coordenador -->
-                        <div class="flex items-center gap-3 text-gray-700 dark:text-gray-300">
-                            <i class="fas fa-user w-5 h-5 text-blue-500 dark:text-blue-400"></i>
-                            <div>
-                                <div class="text-sm text-gray-500 dark:text-gray-400">Coordenador</div>
-                                <div class="font-medium">{{ activity.coordinator }}</div>
-                            </div>
-                        </div>
-
-                        <!-- Local -->
-                        <div class="flex items-center gap-3 text-gray-700 dark:text-gray-300">
-                            <i class="fas fa-map-marker-alt w-5 h-5 text-blue-500 dark:text-blue-400"></i>
-                            <div>
-                                <div class="text-sm text-gray-500 dark:text-gray-400">Local</div>
-                                <div class="font-medium">{{ activity.location }}</div>
-                            </div>
-                        </div>
-
-                        <!-- Participantes -->
-                        <div class="flex items-center gap-3 text-gray-700 dark:text-gray-300">
-                            <i class="fas fa-users w-5 h-5 text-blue-500 dark:text-blue-400"></i>
-                            <div>
-                                <div class="text-sm text-gray-500 dark:text-gray-400">Participantes</div>
-                                <div class="font-medium">{{ activity.participants }} pessoas</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Coluna Direita -->
-                    <div class="space-y-4">
-                        <!-- Data -->
-                        <div class="flex items-center gap-3 text-gray-700 dark:text-gray-300">
-                            <i class="fas fa-calendar w-5 h-5 text-blue-500 dark:text-blue-400"></i>
-                            <div>
-                                <div class="text-sm text-gray-500 dark:text-gray-400">Data</div>
-                                <div class="font-medium">
-                                    {% if activity.start_date == activity.end_date %}
-                                        {{ activity.start_date|date:"d/m/Y" }}
-                                    {% else %}
-                                        {{ activity.start_date|date:"d/m/Y" }} - {{ activity.end_date|date:"d/m/Y" }}
-                                    {% endif %}
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Horário -->
-                        {% if activity.time %}
-                            <div class="flex items-center gap-3 text-gray-700 dark:text-gray-300">
-                                <i class="fas fa-clock w-5 h-5 text-blue-500 dark:text-blue-400"></i>
-                                <div>
-                                    <div class="text-sm text-gray-500 dark:text-gray-400">Horário</div>
-                                    <div class="font-medium">{{ activity.time }}</div>
-                                </div>
-                            </div>
-                        {% endif %}
-
-                        <!-- Status -->
-                        <div class="flex items-center gap-3 text-gray-700 dark:text-gray-300">
-                            <i class="fas fa-file-alt w-5 h-5 text-blue-500 dark:text-blue-400"></i>
-                            <div>
-                                <div class="text-sm text-gray-500 dark:text-gray-400">Status</div>
-                                <div class="font-medium">
-                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {% if activity.status == 'PENDING' or activity.status == 'UPCOMING' %}bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200{% elif activity.status == 'IN_PROGRESS' or activity.status == 'ACTIVE' %}bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200{% elif activity.status == 'COMPLETED' %}bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200{% elif activity.status == 'CANCELLED' %}bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200{% else %}bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200{% endif %}">
-                                        {% if activity.status == 'UPCOMING' %}Pendente{% elif activity.status == 'ACTIVE' %}Em Andamento{% else %}{{ activity.get_status_display }}{% endif %}
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
+        <div class="p-6 md:p-8">
+            <!-- Cabeçalho -->
+            <div class="mb-6">
+                <div class="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
+                    <h1 class="text-2xl md:text-3xl font-bold text-gray-900">
+                        {{ activity.title }}
+                    </h1>
+                    <div class="flex flex-wrap items-center gap-2">
+                        <a href="{% url 'activity_update' activity.pk %}" 
+                           class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-blue-600 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors">
+                            <i class="fas fa-pen"></i>
+                            Editar
+                        </a>
+                        <a href="{% url 'activity_delete' activity.pk %}" 
+                           class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-red-600 bg-red-50 rounded-lg hover:bg-red-100 transition-colors">
+                            <i class="fas fa-trash"></i>
+                            Excluir
+                        </a>
+                        <a href="{% url 'activity_list' %}" 
+                           class="inline-flex items-center gap-2 px-4 py-2 text-sm text-gray-600 hover:text-gray-900 transition-colors">
+                            <i class="fas fa-arrow-left"></i>
+                            Voltar
+                        </a>
                     </div>
                 </div>
-
-                <!-- Descrição -->
-                <div class="border-t border-gray-100 dark:border-gray-700 pt-6">
-                    <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">
-                        Sobre a atividade
-                    </h2>
-                    <div class="prose prose-gray dark:prose-invert max-w-none">
-                        <p class="text-gray-600 dark:text-gray-400 leading-relaxed">
-                            {{ activity.description|linebreaks }}
-                        </p>
-                    </div>
-                </div>
-
-                <!-- Requisitos -->
-                {% if activity.requirements.all %}
-                    <div class="border-t border-gray-100 dark:border-gray-700 pt-6">
-                        <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">
-                            Requisitos
-                        </h2>
-                        <ul class="list-disc list-inside space-y-2 text-gray-600 dark:text-gray-400">
-                            {% for requirement in activity.requirements.all %}
-                                <li>{{ requirement.requirement }}</li>
-                            {% endfor %}
-                        </ul>
+                
+                <!-- Tags -->
+                {% if activity.tags.all %}
+                    <div class="flex flex-wrap gap-2 mt-4">
+                        {% for tag in activity.tags.all %}
+                            <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100/80 text-blue-800">
+                                #{{ tag.name }}
+                            </span>
+                        {% endfor %}
                     </div>
                 {% endif %}
             </div>
+
+            <!-- Informações principais -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                <!-- Coordenador -->
+                {% if activity.coordinator %}
+                <div class="flex items-center gap-3 text-gray-700">
+                    <i class="fas fa-user w-5 text-blue-500"></i>
+                    <div>
+                        <div class="text-sm text-gray-400">Coordenador</div>
+                        <div class="font-medium">{{ activity.coordinator }}</div>
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- Local -->
+                {% if activity.location %}
+                <div class="flex items-center gap-3 text-gray-700">
+                    <i class="fas fa-map-marker-alt w-5 text-blue-500"></i>
+                    <div>
+                        <div class="text-sm text-gray-400">Local</div>
+                        <div class="font-medium">{{ activity.location }}</div>
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- Participantes -->
+                <div class="flex items-center gap-3 text-gray-700">
+                    <i class="fas fa-users w-5 text-blue-500"></i>
+                    <div>
+                        <div class="text-sm text-gray-400">Participantes</div>
+                        <div class="font-medium">{{ activity.participants }} pessoas</div>
+                    </div>
+                </div>
+
+                <!-- Data -->
+                <div class="flex items-center gap-3 text-gray-700">
+                    <i class="fas fa-calendar w-5 text-blue-500"></i>
+                    <div>
+                        <div class="text-sm text-gray-400">Data</div>
+                        <div class="font-medium">
+                            {% if activity.start_date == activity.end_date %}
+                                {{ activity.start_date|date:"d/m/Y" }}
+                            {% else %}
+                                {{ activity.start_date|date:"d/m/Y" }} - {{ activity.end_date|date:"d/m/Y" }}
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Horário -->
+                {% if activity.time %}
+                <div class="flex items-center gap-3 text-gray-700">
+                    <i class="fas fa-clock w-5 text-blue-500"></i>
+                    <div>
+                        <div class="text-sm text-gray-400">Horário</div>
+                        <div class="font-medium">{{ activity.time }}</div>
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- Status -->
+                <div class="flex items-center gap-3 text-gray-700">
+                    <i class="fas fa-file-alt w-5 text-blue-500"></i>
+                    <div>
+                        <div class="text-sm text-gray-400">Status</div>
+                        <div class="font-medium">
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {% if activity.status == 'PENDING' or activity.status == 'UPCOMING' %}bg-yellow-100 text-yellow-800{% elif activity.status == 'IN_PROGRESS' or activity.status == 'ACTIVE' %}bg-blue-100 text-blue-800{% elif activity.status == 'COMPLETED' %}bg-green-100 text-green-800{% elif activity.status == 'CANCELLED' %}bg-red-100 text-red-800{% else %}bg-gray-100 text-gray-800{% endif %}">
+                                {% if activity.status == 'UPCOMING' %}Pendente{% elif activity.status == 'ACTIVE' %}Em Andamento{% else %}{{ activity.get_status_display }}{% endif %}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Descrição -->
+            <div class="border-t border-gray-100 pt-6">
+                <h2 class="text-xl font-semibold text-gray-900 mb-4">
+                    Sobre a atividade
+                </h2>
+                <div class="prose prose-gray max-w-none">
+                    <p class="text-gray-600 leading-relaxed">
+                        {{ activity.description|linebreaks }}
+                    </p>
+                </div>
+            </div>
+
+            <!-- Requisitos -->
+            {% if activity.requirements.all %}
+                <div class="border-t border-gray-100 pt-6 mt-6">
+                    <h2 class="text-xl font-semibold text-gray-900 mb-4">
+                        Requisitos
+                    </h2>
+                    <ul class="list-disc list-inside space-y-2 text-gray-600">
+                        {% for requirement in activity.requirements.all %}
+                            <li>{{ requirement.requirement }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endif %}
         </div>
     </div>
 </div>
@@ -163,14 +159,14 @@
 <div class="flex flex-col items-center justify-center min-h-[60vh]">
     <div class="text-center space-y-4">
         <p class="text-6xl">😕</p>
-        <h2 class="text-2xl font-semibold text-gray-900 dark:text-white">
+        <h2 class="text-2xl font-semibold text-gray-900">
             Atividade não encontrada
         </h2>
-        <p class="text-gray-500 dark:text-gray-400">
+        <p class="text-gray-500">
             A atividade que você está procurando não existe ou foi removida.
         </p>
         <a href="{% url 'activity_list' %}" 
-           class="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors">
+           class="inline-flex items-center gap-2 px-5 py-2.5 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors">
             <i class="fas fa-arrow-left"></i>
             Voltar para a lista
         </a>

@@ -58,6 +58,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'activities.middleware.AccessibilityMiddleware',
 ]
 
 ROOT_URLCONF = 'ufc_activities_django.urls'
@@ -72,6 +73,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'activities.context_processors.accessibility_settings',
+                'activities.context_processors.current_year',
             ],
         },
     },
@@ -130,7 +133,6 @@ STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATICFILES_DIRS = [
     BASE_DIR / "static",
-    BASE_DIR / "theme" / "static",
 ]
 
 # Whitenoise para servir arquivos estáticos em produção
