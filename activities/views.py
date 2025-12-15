@@ -40,6 +40,14 @@ class ActivityListView(ListView):
                 queryset = queryset.filter(status__in=['IN_PROGRESS', 'ACTIVE'])
             else:
                 queryset = queryset.filter(status=status)
+        
+        start_date = self.request.GET.get('start_date')
+        if start_date:
+            queryset = queryset.filter(start_date__gte=start_date)
+        
+        end_date = self.request.GET.get('end_date')
+        if end_date:
+            queryset = queryset.filter(start_date__lte=end_date)
             
         return queryset.order_by('-created_at')
     
@@ -92,9 +100,9 @@ class ActivityDeleteView(DeleteView):
     template_name = 'activities/delete.html'
     success_url = reverse_lazy('activity_list')
     
-    def delete(self, request, *args, **kwargs):
+    def post(self, request, *args, **kwargs):
         messages.success(self.request, 'Atividade excluída com sucesso!')
-        return super().delete(request, *args, **kwargs)
+        return super().post(request, *args, **kwargs)
 
 
 def dashboard_view(request):
