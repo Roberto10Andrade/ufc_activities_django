@@ -12,12 +12,10 @@
     <div class="relative z-10">
         <h1 class="text-3xl md:text-4xl font-bold mb-3">Bem-vindo ao Gerenciador de Atividades</h1>
         <p class="text-base md:text-lg opacity-90 mb-6">Organize suas atividades acadêmicas de forma eficiente</p>
-        {% if user.is_authenticated %}
         <a href="{% url 'activity_create' %}" class="inline-flex items-center gap-2 bg-white text-blue-600 px-5 py-2.5 rounded-lg font-semibold hover:bg-blue-50 transition-all duration-200 shadow-lg hover:shadow-xl">
             <i class="fas fa-plus"></i>
             <span>Criar Nova Atividade</span>
         </a>
-        {% endif %}
     </div>
     <!-- Decorative Icon -->
     <div class="absolute right-4 md:right-8 top-1/2 -translate-y-1/2 opacity-10">
@@ -122,7 +120,6 @@
         <h2 class="text-lg font-bold text-gray-900 mb-4">Ações Rápidas</h2>
         
         <div class="space-y-3">
-            {% if user.is_authenticated %}
             <a href="{% url 'activity_create' %}" class="group flex items-center p-4 rounded-xl bg-gradient-to-r from-blue-500 to-blue-600 text-white hover:from-blue-600 hover:to-blue-700 transition-all duration-300 shadow-md hover:shadow-lg transform hover:-translate-y-1">
                 <div class="p-3 mr-4 rounded-full bg-white/20">
                     <i class="fas fa-plus"></i>
@@ -133,7 +130,6 @@
                 </div>
                 <i class="fas fa-chevron-right opacity-70 group-hover:translate-x-1 transition-transform"></i>
             </a>
-            {% endif %}
             
             <a href="{% url 'activity_list' %}" class="group flex items-center p-4 rounded-xl bg-gradient-to-r from-purple-500 to-purple-600 text-white hover:from-purple-600 hover:to-purple-700 transition-all duration-300 shadow-md hover:shadow-lg transform hover:-translate-y-1">
                 <div class="p-3 mr-4 rounded-full bg-white/20">
