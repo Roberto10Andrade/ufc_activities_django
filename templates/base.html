@@ -89,11 +89,53 @@
             font-family: 'OpenDyslexic';
             src: url('https://cdn.jsdelivr.net/npm/open-dyslexic@1.0.3/woff/OpenDyslexic-Regular.woff') format('woff');
         }
+
+        /* CSS-only sidebar toggle */
+        #sidebar-toggle:checked ~ .sidebar {
+            transform: translateX(-100%);
+        }
+        
+        #sidebar-toggle:checked ~ .main-content {
+            margin-left: 0;
+        }
+        
+        #sidebar-toggle:checked ~ .toggle-label {
+            left: 1rem;
+        }
+        
+        #sidebar-toggle:checked ~ .toggle-label .icon-left {
+            display: none;
+        }
+        
+        #sidebar-toggle:checked ~ .toggle-label .icon-right {
+            display: block;
+        }
+        
+        .sidebar {
+            transition: transform 0.3s ease-in-out;
+        }
+        
+        .main-content {
+            transition: margin-left 0.3s ease-in-out;
+        }
+        
+        .toggle-label {
+            transition: left 0.3s ease-in-out;
+        }
     </style>
 </head>
 <body class="m-0 p-0 min-h-screen text-slate-800">
+    <!-- Hidden checkbox for sidebar toggle -->
+    <input type="checkbox" id="sidebar-toggle" class="hidden" {% if request.GET.sidebar == 'closed' %}checked{% endif %}>
+    
+    <!-- Toggle Button Label -->
+    <label for="sidebar-toggle" class="toggle-label fixed top-4 left-[272px] z-[60] w-10 h-10 bg-white rounded-full shadow-lg flex items-center justify-center text-gray-600 hover:text-blue-600 hover:shadow-xl transition-all duration-200 cursor-pointer">
+        <i class="fas fa-chevron-left icon-left"></i>
+        <i class="fas fa-chevron-right icon-right hidden"></i>
+    </label>
+
     <!-- Sidebar -->
-    <aside class="fixed left-0 top-0 h-screen w-64 overflow-y-auto bg-gradient-to-b from-blue-500 to-blue-700 text-white shadow-xl z-50">
+    <aside class="sidebar fixed left-0 top-0 h-screen w-64 overflow-y-auto bg-gradient-to-b from-blue-500 to-blue-700 text-white shadow-xl z-50">
         <div class="pt-8 px-6">
             <!-- Logo -->
             <div class="flex flex-col items-center justify-center mb-8">
@@ -193,7 +235,7 @@
     </aside>
 
     <!-- Main Content -->
-    <main class="ml-64 min-h-screen">
+    <main class="main-content ml-64 min-h-screen">
         <div class="p-6 md:p-8">
             <!-- Messages -->
             {% if messages %}
